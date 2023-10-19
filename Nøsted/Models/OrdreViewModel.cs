@@ -13,4 +13,6 @@ public class OrdreViewModel
     public string Gjelder { get; set; }
     public string Epost { get; set; }
     
+    public List<ArbeidsDokumentViewModel> Arbeidsdokument2 { get; set; }
+    
 }

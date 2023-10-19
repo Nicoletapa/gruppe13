@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Nøsted.Data;
 using Nøsted.Models;
@@ -17,14 +12,15 @@ namespace Nøsted.Controllers
         public OrdreController(ApplicationDbContext context)
         {
             _context = context;
+            
         }
 
         // GET: Ordre
         public async Task<IActionResult> Index()
         {
-              return _context.Ordre != null ? 
-                          View(await _context.Ordre.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Ordre'  is null.");
+            return _context.Ordre != null
+                ? View(await _context.Ordre.ToListAsync())
+                : Problem("Entity set 'ApplicationDbContext.Ordre'  is null.");
         }
 
         // GET: Ordre/Details/5
@@ -56,14 +52,33 @@ namespace Nøsted.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrdreNr,Navn,TelefonNr,Adresse,Type,Gjelder,Epost")] OrdreViewModel ordreViewModel)
+        public async Task<IActionResult> Create(
+            [Bind("OrdreNr,Navn,TelefonNr,Adresse,Type,Gjelder,Epost")] OrdreViewModel ordreViewModel)
         {
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 _context.Add(ordreViewModel);
+                /*var arbeidsDokument = new ArbeidsDokumentViewModel()
+                {
+                    KundeInfo = "kundeinfo",
+                    Uke = 1,
+                    Registrert = DateTime.Now.Date,
+                    Type = "Type", 
+                    Bestilling = "Bestilling..",
+                    AvtaltLevering = DateTime.Now.Date, 
+                    ProduktMotatt = DateTime.Now.Date,
+                    AvtaltFerdigstillelse = DateTime.Now.Date, 
+                    ServiceFerdig = DateTime.MinValue,
+                    AntallTimer = 0,
+                    OrdreID = ordreViewModel.OrdreNr
+
+                };
+                arbeidsDokument.Ordre = ordreViewModel;
+                _context.Add(arbeidsDokument);*/
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            //}
+
             return View(ordreViewModel);
         }
 
@@ -80,6 +95,7 @@ namespace Nøsted.Controllers
             {
                 return NotFound();
             }
+
             return View(ordreViewModel);
         }
 
@@ -88,7 +104,8 @@ namespace Nøsted.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrdreNr,Navn,TelefonNr,Adresse,Type,Gjelder,Epost")] OrdreViewModel ordreViewModel)
+        public async Task<IActionResult> Edit(int id,
+            [Bind("OrdreNr,Navn,TelefonNr,Adresse,Type,Gjelder,Epost")] OrdreViewModel ordreViewModel)
         {
             if (id != ordreViewModel.OrdreNr)
             {
@@ -113,8 +130,10 @@ namespace Nøsted.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(ordreViewModel);
         }
 
@@ -145,19 +164,41 @@ namespace Nøsted.Controllers
             {
                 return Problem("Entity set 'ApplicationDbContext.Ordre'  is null.");
             }
+
             var ordreViewModel = await _context.Ordre.FindAsync(id);
             if (ordreViewModel != null)
             {
                 _context.Ordre.Remove(ordreViewModel);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool OrdreViewModelExists(int id)
+        
+        // public IActionResult ArbeidsDokument(int OrdreId)
+        // {
+        //     var viewModelList = ArbeidsDokumentRepository.GetArbeidsDokumentViewModels();
+        //     return View("ArbeidsDokument", viewModelList);
+        // }
+
+        // public IActionResult ArbeidsDokument(int OrdreId)
+        // {
+        //     var ordres = _context.Ordre.Where(o => o.OrdreNr == OrdreId).ToList();
+        //     var arbeidsDokumentViewModels = ordres.Select(ordre => new ArbeidsDokumentViewModel
+        //     {
+        //         Ordre = ordre
+        //     }).ToList();
+        //
+        //     return View("ArbeidsDokument", arbeidsDokumentViewModels);
+        // }
+
+
+    private bool OrdreViewModelExists(int id)
         {
           return (_context.Ordre?.Any(e => e.OrdreNr == id)).GetValueOrDefault();
         }
     }
+  
+    
 }

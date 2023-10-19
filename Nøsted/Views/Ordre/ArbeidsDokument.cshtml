@@ -1,0 +1,115 @@
+@model IEnumerable<Nøsted.Models.ArbeidsDokumentViewModel>
+@*@model Nøsted.Models.ArbeidsDokumentViewModel*@
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.OrdreID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Uke)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Registrert)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Bestilling)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.KundeInfo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AvtaltLevering)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProduktMotatt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AvtaltFerdigstillelse)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceFerdig)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AntallTimer)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+   @foreach (var item in Model)
+   {
+       <tr>
+           <td>
+               @Html.DisplayFor(modelItem => item.OrdreID)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.Uke)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.Registrert)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.Type)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.Bestilling)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.KundeInfo)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.AvtaltLevering)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.ProduktMotatt)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.AvtaltFerdigstillelse)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.ServiceFerdig)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.AntallTimer)
+           </td>
+           <td>
+               <a asp-action="Edit" asp-route-id="@item.OrdreID">Edit</a> |
+               <a asp-action="Details" asp-route-id="@item.OrdreID">Details</a> |
+               <a asp-action="Delete" asp-route-id="@item.OrdreID">Delete</a>
+           </td>
+       </tr>
+   }
+   
+ @*  <div>
+       <h1>ArbeidsDokument Details</h1>
+       <p>OrdreID: @Model.OrdreID</p>
+       <p>Uke: @Model.Uke</p>
+       <p>Registrert: @Model.Registrert</p>
+       <p>Type: @Model.Type</p>
+       <p>Bestilling: @Model.Bestilling</p>
+       <p>Kunde Info: @Model.KundeInfo</p>
+       <p>Avtalt Levering: @Model.AvtaltLevering</p>
+       <p>Produkt Mottatt: @Model.ProduktMotatt</p>
+       <p>Avtalt Ferdigstillelse: @Model.AvtaltFerdigstillelse</p>
+       <p>Service Ferdig: @Model.ServiceFerdig</p>
+       <p>Antall Timer: @Model.AntallTimer</p>
+   </div>*@
+
+}
+    </tbody>
+</table>

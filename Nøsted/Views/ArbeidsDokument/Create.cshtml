@@ -1,0 +1,75 @@
+@model Nøsted.Models.ArbeidsDokumentViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>ArbeidsDokumentViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Uke" class="control-label"></label>
+                <input asp-for="Uke" class="form-control" />
+                <span asp-validation-for="Uke" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registrert" class="control-label"></label>
+                <input asp-for="Registrert" class="form-control" />
+                <span asp-validation-for="Registrert" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Type" class="control-label"></label>
+                <input asp-for="Type" class="form-control" />
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Bestilling" class="control-label"></label>
+                <input asp-for="Bestilling" class="form-control" />
+                <span asp-validation-for="Bestilling" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="KundeInfo" class="control-label"></label>
+                <input asp-for="KundeInfo" class="form-control" />
+                <span asp-validation-for="KundeInfo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AvtaltLevering" class="control-label"></label>
+                <input asp-for="AvtaltLevering" class="form-control" />
+                <span asp-validation-for="AvtaltLevering" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProduktMotatt" class="control-label"></label>
+                <input asp-for="ProduktMotatt" class="form-control" />
+                <span asp-validation-for="ProduktMotatt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AvtaltFerdigstillelse" class="control-label"></label>
+                <input asp-for="AvtaltFerdigstillelse" class="form-control" />
+                <span asp-validation-for="AvtaltFerdigstillelse" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ServiceFerdig" class="control-label"></label>
+                <input asp-for="ServiceFerdig" class="form-control" />
+                <span asp-validation-for="ServiceFerdig" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AntallTimer" class="control-label"></label>
+                <input asp-for="AntallTimer" class="form-control" />
+                <span asp-validation-for="AntallTimer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

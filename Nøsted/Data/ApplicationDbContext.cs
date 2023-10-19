@@ -11,4 +11,17 @@ public class ApplicationDbContext : IdentityDbContext
     {
     }
     public DbSet<OrdreViewModel> Ordre { get; set; } = default!;
+    public DbSet<ArbeidsDokumentViewModel> ArbeidsDokument2 { get; set; } = default!;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        
+        modelBuilder.Entity<ArbeidsDokumentViewModel>()
+            .HasOne(ad => ad.Ordre)
+            .WithMany()
+            .HasForeignKey(ad => ad.OrdreID);
+        
+        base.OnModelCreating(modelBuilder);
+    }
+
 }
