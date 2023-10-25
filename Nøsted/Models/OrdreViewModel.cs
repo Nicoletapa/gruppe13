@@ -12,5 +12,15 @@ public class OrdreViewModel
     public string  Type { get; set; }
     public string Gjelder { get; set; }
     public string Epost { get; set; }
+    public int Uke { get; set; }
+    public DateTime Registrert { get; set; }
+    public string Bestilling { get; set; }
+    public DateTime AvtaltLevering { get; set; }
+    public DateTime ProduktMotatt { get; set; }
+    public DateTime AvtaltFerdigstillelse  { get; set; }
+    public DateTime ServiceFerdig { get; set; }
+    public decimal AntallTimer { get; set; }
+    public bool status { get; set; }
+    
     
 }

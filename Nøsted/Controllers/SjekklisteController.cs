@@ -24,20 +24,20 @@ namespace Nøsted.Controllers
         // GET: Sjekkliste
         public async Task<IActionResult> Index()
         {
-              return _context.SjekklisteViewModel != null ? 
-                          View(await _context.SjekklisteViewModel.ToListAsync()) :
+              return _context.SjekklisteViewModel1 != null ? 
+                          View(await _context.SjekklisteViewModel1.ToListAsync()) :
                           Problem("Entity set 'ApplicationDbContext.SjekklisteViewModels'  is null.");
         }
 
         // GET: Sjekkliste/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.SjekklisteViewModel == null)
+            if (id == null || _context.SjekklisteViewModel1 == null)
             {
                 return NotFound();
             }
 
-            var sjekklisteViewModel = await _context.SjekklisteViewModel
+            var sjekklisteViewModel = await _context.SjekklisteViewModel1
                 .FirstOrDefaultAsync(m => m.SjekklisteID == id);
             if (sjekklisteViewModel == null)
             {
@@ -198,12 +198,12 @@ namespace Nøsted.Controllers
         // GET: Sjekkliste/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.SjekklisteViewModel == null)
+            if (id == null || _context.SjekklisteViewModel1 == null)
             {
                 return NotFound();
             }
 
-            var sjekklisteViewModel = await _context.SjekklisteViewModel.FindAsync(id);
+            var sjekklisteViewModel = await _context.SjekklisteViewModel1.FindAsync(id);
             if (sjekklisteViewModel == null)
             {
                 return NotFound();
@@ -249,12 +249,12 @@ namespace Nøsted.Controllers
         // GET: Sjekkliste/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.SjekklisteViewModel == null)
+            if (id == null || _context.SjekklisteViewModel1 == null)
             {
                 return NotFound();
             }
 
-            var sjekklisteViewModel = await _context.SjekklisteViewModel
+            var sjekklisteViewModel = await _context.SjekklisteViewModel1
                 .FirstOrDefaultAsync(m => m.SjekklisteID == id);
             if (sjekklisteViewModel == null)
             {
@@ -269,14 +269,14 @@ namespace Nøsted.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.SjekklisteViewModel == null)
+            if (_context.SjekklisteViewModel1 == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.SjekklisteViewModels'  is null.");
             }
-            var sjekklisteViewModel = await _context.SjekklisteViewModel.FindAsync(id);
+            var sjekklisteViewModel = await _context.SjekklisteViewModel1.FindAsync(id);
             if (sjekklisteViewModel != null)
             {
-                _context.SjekklisteViewModel.Remove(sjekklisteViewModel);
+                _context.SjekklisteViewModel1.Remove(sjekklisteViewModel);
             }
             
             await _context.SaveChangesAsync();
@@ -285,7 +285,7 @@ namespace Nøsted.Controllers
 
         private bool SjekklisteViewModelExists(int id)
         {
-          return (_context.SjekklisteViewModel?.Any(e => e.SjekklisteID == id)).GetValueOrDefault();
+          return (_context.SjekklisteViewModel1?.Any(e => e.SjekklisteID == id)).GetValueOrDefault();
         }
     }
 }
