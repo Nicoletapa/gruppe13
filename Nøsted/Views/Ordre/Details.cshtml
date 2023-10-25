@@ -10,6 +10,12 @@
     <h4>OrdreViewModel</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.OrdreNr)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.OrdreNr)
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Navn)
         </dt>
@@ -46,9 +52,64 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Epost)
         </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Uke)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Uke)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Registrert)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Registrert)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Bestilling)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Bestilling)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AvtaltLevering)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AvtaltLevering)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ProduktMotatt)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ProduktMotatt)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AvtaltFerdigstillelse)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AvtaltFerdigstillelse)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ServiceFerdig)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ServiceFerdig)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AntallTimer)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AntallTimer)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.status)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.status)
+        </dd>
     </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.OrdreNr">Edit</a> |
     <a asp-action="Index">Back to List</a>
+    <a asp-controller="Sjekkliste" asp-action="Create">Gå til sjekkliste</a>
 </div>
