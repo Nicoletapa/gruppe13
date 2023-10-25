@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Nøsted.Data;
+using Nøsted_;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,5 +41,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+WebHost.CreateDefaultBuilder(args)
+.ConfigureKestrel(c => c.AddServerHeader = false)
+.UseStartup<Startup>() // Use the correct startup class here
+.Build();
 
 app.Run();
