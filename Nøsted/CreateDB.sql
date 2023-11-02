@@ -1,4 +1,5 @@
-
+create database if not exists webAppDatabase2;
+use webAppDatabase2;
 create table AspNetRoleClaims
 (
     Id         int auto_increment
