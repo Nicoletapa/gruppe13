@@ -1,3 +1,4 @@
+
 create table AspNetRoleClaims
 (
     Id         int auto_increment
@@ -121,71 +122,43 @@ create table Ordre1
     Status                tinyint(1)     null
 );
 
-create table SjekklisteElektro
+create table Sjekkliste3
 (
-    SjekklisteElektroID      int         not null
+    SjekklisteID                  int auto_increment
         primary key,
-    SjekkLedningsnettPåVinsj varchar(50) null,
-    SjekkOgTestRadio         varchar(50) null,
-    SjekkOgTestKnappekasse   varchar(50) null
+    Kommentar                     longtext null,
+    TestVinsjOgKjørAlleFunksjoner longtext null,
+    TrekkKraftKN                  longtext null,
+    BremseKraftKN                 longtext null
 );
 
-create table SjekklisteFunksjonsTest
+create table SjekklisteSjekkpunkt1
 (
-    SjekklisteFunksjonsTestID     int         not null
-        primary key,
-    TestVinsjOgKjørAlleFunksjoner varchar(50) null,
-    TrekkkraftKN                  varchar(50) null,
-    BremseKraftKN                 varchar(50) null
+    SjekklisteID int          not null,
+    SjekkpunktID int          not null,
+    Status       varchar(255) null,
+    primary key (SjekklisteID, SjekkpunktID),
+    constraint sjekklistesjekkpunkt1_ibfk_1
+        foreign key (SjekklisteID) references webappdatabase2.Sjekkliste3 (SjekklisteID),
+    constraint sjekklistesjekkpunkt1_ibfk_2
+        foreign key (SjekkpunktID) references webappdatabase2.Sjekkpunkt (SjekkpunktID)
 );
 
-create table SjekklisteHydraulisk
+create index SjekkpunktID
+    on SjekklisteSjekkpunkt1 (SjekkpunktID);
+
+create table Sjekkpunkt
 (
-    SjekklisteHydrauliskID                  int         not null
+    SjekkpunktID   int auto_increment
         primary key,
-    SjekkHydraulikkSylinderForLekkasje      varchar(50) null,
-    SjekkSlangerForSkaderOgLekkasje         varchar(50) null,
-    TestHydraulikkBlokkITestbenk            varchar(50) null,
-    SkiftOljeITank                          varchar(50) null,
-    SkiftOljePåGirBoks                      varchar(50) null,
-    SjekkRingsylinderÅpneOgSkiftTetninger   varchar(50) null,
-    SjekkBremseSylinderÅpneOgSkiftTetninger varchar(50) null
+    SjekkpunktNavn varchar(255) null,
+    KategoriID     int          null,
+    constraint sjekkpunkt_ibfk_1
+        foreign key (KategoriID) references webappdatabase2.kategori (KategoriID)
 );
 
-create table SjekklisteKommentarer
-(
-    SjekklisteKommentarerID int         not null
-        primary key,
-    Kommentar               varchar(50) null
-);
-
-create table SjekklisteMekanisk
-(
-    SjekklisteMekaniskID           int         not null
-        primary key,
-    SjekkClutchLamellerForSlitasje varchar(50) null,
-    SjekkBremserBåndPål            varchar(50) null,
-    SjekkLagerForTrommel           varchar(50) null,
-    SjekkPTOOgOpplagring           varchar(50) null,
-    SjekkKjedeStrammer             varchar(50) null,
-    SjekkWire                      varchar(50) null,
-    SjekkPinionLager               varchar(50) null,
-    SjekkKilePåKjedehjul           varchar(50) null
-);
-
-create table SjekklisteTrykkSettinger
-(
-    SjekklisteTrykkSettingerID int           not null
-        primary key,
-    xx_Bar                     varchar(5000) null
-);
-
-create table SjekklisteViewModel1
-(
-    SjekklisteID                            int auto_increment
-        primary key
- 
-);
+create index KategoriID
+    on Sjekkpunkt (KategoriID);
 
 create table __EFMigrationsHistory
 (
