@@ -1,5 +1,27 @@
 create database if not exists webAppDatabase2;
 use webAppDatabase2;
+
+
+create table AspNetRoles
+(
+    Id               varchar(255) not null
+        primary key,
+    Name             varchar(255) null,
+    NormalizedName   varchar(255) null,
+    ConcurrencyStamp varchar(255) null
+);
+
+create table AspNetUserTokens
+(
+    UserId        varchar(255) not null,
+    LoginProvider varchar(255) not null,
+    Name          varchar(255) not null,
+    Value         varchar(255) null,
+    primary key (UserId, LoginProvider)
+);
+
+
+
 create table AspNetRoleClaims
 (
     Id         int auto_increment
@@ -16,14 +38,7 @@ create table AspNetRoleClaims
 create index RoleId
     on AspNetRoleClaims (RoleId);
 
-create table AspNetRoles
-(
-    Id               varchar(255) not null
-        primary key,
-    Name             varchar(255) null,
-    NormalizedName   varchar(255) null,
-    ConcurrencyStamp varchar(255) null
-);
+
 
 create table AspNetUserClaims
 (
@@ -71,14 +86,9 @@ create table AspNetUserRoles
 create index RoleId
     on AspNetUserRoles (RoleId);
 
-create table AspNetUserTokens
-(
-    UserId        varchar(255) not null,
-    LoginProvider varchar(255) not null,
-    Name          varchar(255) not null,
-    Value         varchar(255) null,
-    primary key (UserId, LoginProvider)
-);
+
+
+
 
 create table AspNetUsers
 (
@@ -102,6 +112,13 @@ create table AspNetUsers
         unique (Id)
 );
 
+create table Kategori
+(
+    KategoriID   int         not null
+        primary key,
+    KategoriNavn varchar(50) null
+);
+
 create table Ordre1
 (
     OrdreNr               int auto_increment
@@ -123,43 +140,41 @@ create table Ordre1
     Status                tinyint(1)     null
 );
 
-create table Sjekkliste3
+create table Sjekkliste
 (
-    SjekklisteID                  int auto_increment
-        primary key,
-    Kommentar                     longtext null,
-    TestVinsjOgKjørAlleFunksjoner longtext null,
-    TrekkKraftKN                  longtext null,
-    BremseKraftKN                 longtext null
+    SjekklisteID int auto_increment
+        primary key
 );
 
-create table SjekklisteSjekkpunkt1
+create table SjekklisteSjekkpunkt
 (
-    SjekklisteID int          not null,
-    SjekkpunktID int          not null,
-    Status       varchar(255) null,
-    primary key (SjekklisteID, SjekkpunktID),
-    constraint sjekklistesjekkpunkt1_ibfk_1
-        foreign key (SjekklisteID) references webappdatabase2.Sjekkliste3 (SjekklisteID),
-    constraint sjekklistesjekkpunkt1_ibfk_2
+    SjekklisteSjekkpunktID int          not null
+        primary key,
+    SjekklisteID           int          null,
+    Status                 varchar(255) null,
+    SjekkpunktID           int          null,
+    constraint SjekklisteSjekkpunkt___fk
+        foreign key (SjekklisteID) references webappdatabase2.sjekkliste (SjekklisteID),
+    constraint sjekklistesjekkpunkt_ibfk_2
         foreign key (SjekkpunktID) references webappdatabase2.Sjekkpunkt (SjekkpunktID)
 );
 
 create index SjekkpunktID
-    on SjekklisteSjekkpunkt1 (SjekkpunktID);
+    on SjekklisteSjekkpunkt (SjekkpunktID);
 
-create table Sjekkpunkt
+
+create table Sjekkpunkt2
 (
-    SjekkpunktID   int auto_increment
+    SjekkpunktID   int          not null
         primary key,
     SjekkpunktNavn varchar(255) null,
     KategoriID     int          null,
-    constraint sjekkpunkt_ibfk_1
-        foreign key (KategoriID) references webappdatabase2.kategori (KategoriID)
+    constraint sjekkpunkt2_ibfk_1
+        foreign key (KategoriID) references webappdatabase2.Kategori (KategoriID)
 );
 
 create index KategoriID
-    on Sjekkpunkt (KategoriID);
+    on Sjekkpunkt2 (KategoriID);
 
 create table __EFMigrationsHistory
 (
