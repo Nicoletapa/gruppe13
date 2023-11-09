@@ -1,3 +1,5 @@
+create database if not exists webAppDatabase;
+use webAppDatabase;
 create table AspNetRoleClaims
 (
     Id         int auto_increment
@@ -96,8 +98,16 @@ create table AspNetUsers
     LockoutEnd           timestamp    null,
     LockoutEnabled       bit          not null,
     AccessFailedCount    int          not null,
+    Discriminator        varchar(255) null,
     constraint Id
         unique (Id)
+);
+
+create table Kategori
+(
+    KategoriID   int         not null
+        primary key,
+    KategoriNavn varchar(50) null
 );
 
 create table Ordre1
@@ -121,76 +131,61 @@ create table Ordre1
     Status                tinyint(1)     null
 );
 
-create table SjekklisteElektro
+create table Sjekkliste
 (
-    SjekklisteElektroID      int         not null
+    SjekklisteID int auto_increment
         primary key,
-    SjekkLedningsnettPåVinsj varchar(50) null,
-    SjekkOgTestRadio         varchar(50) null,
-    SjekkOgTestKnappekasse   varchar(50) null
+    OrdreNr      int not null,
+    constraint Sjekkliste___fk
+        foreign key (OrdreNr) references webappdatabase2.Ordre1 (OrdreNr)
 );
 
-create table SjekklisteFunksjonsTest
+create table SjekklisteSjekkpunkt
 (
-    SjekklisteFunksjonsTestID     int         not null
+    SjekklisteSjekkpunktID int          not null
         primary key,
-    TestVinsjOgKjørAlleFunksjoner varchar(50) null,
-    TrekkkraftKN                  varchar(50) null,
-    BremseKraftKN                 varchar(50) null
+    SjekklisteID           int          null,
+    Status                 varchar(255) null,
+    SjekkpunktID           int          not null,
+    constraint SjekklisteSjekkpunkt___fk
+        foreign key (SjekklisteID) references webappdatabase2.Sjekkliste (SjekklisteID),
+    constraint sjekklistesjekkpunkt_ibfk_2
+        foreign key (SjekkpunktID) references webappdatabase2.Sjekkpunkt2 (SjekkpunktID)
 );
 
-create table SjekklisteHydraulisk
+
+create table Sjekkpunkt2
 (
-    SjekklisteHydrauliskID                  int         not null
+    SjekkpunktID   int          not null
         primary key,
-    SjekkHydraulikkSylinderForLekkasje      varchar(50) null,
-    SjekkSlangerForSkaderOgLekkasje         varchar(50) null,
-    TestHydraulikkBlokkITestbenk            varchar(50) null,
-    SkiftOljeITank                          varchar(50) null,
-    SkiftOljePåGirBoks                      varchar(50) null,
-    SjekkRingsylinderÅpneOgSkiftTetninger   varchar(50) null,
-    SjekkBremseSylinderÅpneOgSkiftTetninger varchar(50) null
+    SjekkpunktNavn varchar(255) null,
+    KategoriID     int          null,
+    SjekklisteID   int          null,
+    constraint Sjekkpunkt2___fk
+        foreign key (SjekklisteID) references webappdatabase2.Sjekkliste (SjekklisteID),
+    constraint sjekkpunkt2_ibfk_1
+        foreign key (KategoriID) references webappdatabase2.Kategori (KategoriID)
 );
 
-create table SjekklisteKommentarer
-(
-    SjekklisteKommentarerID int         not null
-        primary key,
-    Kommentar               varchar(50) null
-);
-
-create table SjekklisteMekanisk
-(
-    SjekklisteMekaniskID           int         not null
-        primary key,
-    SjekkClutchLamellerForSlitasje varchar(50) null,
-    SjekkBremserBåndPål            varchar(50) null,
-    SjekkLagerForTrommel           varchar(50) null,
-    SjekkPTOOgOpplagring           varchar(50) null,
-    SjekkKjedeStrammer             varchar(50) null,
-    SjekkWire                      varchar(50) null,
-    SjekkPinionLager               varchar(50) null,
-    SjekkKilePåKjedehjul           varchar(50) null
-);
-
-create table SjekklisteTrykkSettinger
-(
-    SjekklisteTrykkSettingerID int           not null
-        primary key,
-    xx_Bar                     varchar(5000) null
-);
-
-create table SjekklisteViewModel1
-(
-    SjekklisteID                            int auto_increment
-        primary key
- 
-);
+create index KategoriID
+    on Sjekkpunkt2 (KategoriID);
 
 create table __EFMigrationsHistory
 (
     MigrationId    varchar(150) not null
         primary key,
     ProductVersion varchar(32)  not null
+);
+
+create table bruker
+(
+    Id    int auto_increment
+        primary key,
+    Name  varchar(255) null,
+    Email varchar(255) null,
+    constraint Email
+        unique (Email),
+    constraint Id
+        unique (Id)
 );
 
