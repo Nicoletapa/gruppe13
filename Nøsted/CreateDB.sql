@@ -201,3 +201,10 @@ INSERT INTO Sjekkpunkt2 (SjekkpunktID, SjekkpunktNavn, KategoriID) VALUES
 (22, 'BremseKraft KN', 5),
 (23, 'Kommentar', 5);
 
+-- Insert data into Kategori table
+INSERT INTO Kategori (KategoriID, KategoriNavn) VALUES
+(1, 'Mekanisk'),
+(2, 'Hydraulisk'),
+(3, 'Elektro'),
+(4, 'Trykk Settinger'),
+(5, 'Funksjonstest');
