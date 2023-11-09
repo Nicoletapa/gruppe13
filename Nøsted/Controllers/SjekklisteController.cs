@@ -29,7 +29,7 @@ namespace Nøsted.Controllers
                 sjekklisteSjekkpunkt = await _context.SjekklisteSjekkpunkt.FirstOrDefaultAsync()
             };
             return View(viewModel);
-            
+
 
         }
 
@@ -49,23 +49,33 @@ namespace Nøsted.Controllers
             }
 
             return View(sjekkliste);
-        } 
-        
+        }
+
         [HttpGet]
         public async Task<IActionResult> Create(int orderId)
         {
-            // Assuming you have some logic to retrieve an existing OrdreViewModel based on your requirements
+            // Check if the Ordre1 exists
+            var existingOrder = await _context.Ordre1
+                .FirstOrDefaultAsync(o => o.OrdreNr == orderId);
+    
+            if (existingOrder == null)
+            {
+                // Handle the case where the order does not exist.
+                // You could create a new order here, or return an error message, etc.
+                return NotFound("Order with the specified ID does not exist.");
+            }
+    
             var existingSjekkliste = await _context.Sjekkliste
                 .FirstOrDefaultAsync(s => s.OrdreNr == orderId);
 
             if (existingSjekkliste == null)
             {
-                // If no checklist exists for the given orderID, create a new one
+                // Create a new Sjekkliste since it does not exist
                 var newSjekkliste = new Sjekkliste
                 {
                     OrdreNr = orderId,
                     
-                    // other properties...
+                    // Initialize other properties as necessary...
                 };
 
                 _context.Sjekkliste.Add(newSjekkliste);
@@ -93,26 +103,46 @@ namespace Nøsted.Controllers
 
 
         // POST: api/Sjekkliste/CreateChecklist
+        // POST: api/Sjekkliste/CreateChecklist
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateSjekklisteSjekkpunktViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                // Assuming SjekklisteSjekkpunkt has a Status property that you want to set
-                viewModel.sjekklisteSjekkpunkt.Status = "Ok"; // Set the default status here or get it from the form
+                // Get all Sjekkpunkt entries (assuming there are 23, and they are pre-populated in the database)
+                var sjekkpunkter = await _context.Sjekkpunkt2.ToListAsync();
 
-                // Add the new SjekklisteSjekkpunkt to the context and save changes
-                _context.SjekklisteSjekkpunkt.Add(viewModel.sjekklisteSjekkpunkt);
+                // Loop through all Sjekkpunkter and create a SjekklisteSjekkpunkt for each
+                foreach (var sjekkpunkt in sjekkpunkter)
+                {
+                    var sjekklisteSjekkpunkt = new SjekklisteSjekkpunkt
+                    {
+                        SjekklisteID = viewModel.SjekklisteId, // Same SjekklisteID for all
+                        SjekkpunktID = sjekkpunkt.SjekkpunktID,
+                        Status = "Ok" // Default status
+                    };
+
+                    _context.SjekklisteSjekkpunkt.Add(sjekklisteSjekkpunkt);
+                }
+
                 await _context.SaveChangesAsync();
 
-                // Redirect to the desired action after successfully creating the SjekklisteSjekkpunkt
+                // Redirect to the desired action after successfully creating the entries
                 return RedirectToAction("Index");
             }
 
             // If the ModelState is not valid, return to the Create view with the same viewModel
             return View(viewModel);
         }
+        
+        
+
+
+        
+        
+
+
         
         /*
         [HttpGet] 
