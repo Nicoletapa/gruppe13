@@ -1,22 +1,6 @@
 @using Microsoft.CodeAnalysis.Elfie.Model.Map
 @model CreateSjekklisteSjekkpunktViewModel
 
-<!-- Your other form elements -->
-
-@*<div class="form-group">
-    <label for="sjekkpunktId">Sjekkpunkt:</label>
-    @if (Model.Sjekkpunkter != null)
-    {
-        <select asp-for="sjekklisteSjekkpunkt.sjekkpunkt.SjekkpunktID" asp-items="@(new SelectList(Model.Sjekkpunkter, "SjekkpunktId", "SjekkpunktNavn"))" class="form-control"></select>
-    }
-    else
-    {
-        <p>No Sjekkpunkter available.</p>
-    }
-</div>*@
-<a asp-action="Create" asp-route-orderId="@Model.SjekklisteId">Create Checklist</a>
-
-
 <form  >
 <div class="form-group">
     <label for="SjekklisteId">Sjekkliste ID:</label>
@@ -31,7 +15,7 @@
             <th scope="col">Ok</th>
             <th scope="col">Bør Skiftes</th>
             <th scope="col">Defekt</th>
-                               
+
 
         </tr>
         </thead>
@@ -42,17 +26,17 @@
                 <td>@item.KategoriID</td>
                 <td>@item.SjekkpunktNavn</td>
                 <td>
-                    <input type="radio" name="statusRadio_@item.SjekkpunktID" value="Ok" />
+                    <input type="radio" name="statusRadio@item.SjekkpunktID" value="Ok" />
                 </td>
-                
+
                 <td>
-                    <input type="radio" name="statusRadio_@item.SjekkpunktID." value="Bør Skiftes" />
+                    <input type="radio" name="statusRadio@item.SjekkpunktID." value="Bør Skiftes" />
                 </td>
-                
+
                 <td>
                     <input type="radio" name="statusRadio_@item.SjekkpunktID" value="Defekt" />
                 </td>
-                
+
             </tr>
         }
         </tbody>
@@ -62,3 +46,4 @@
     </div>
     @Html.ValidationSummary()
     </form>
+﻿
