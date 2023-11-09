@@ -1,27 +1,3 @@
-create database if not exists webAppDatabase2;
-use webAppDatabase2;
-
-
-create table AspNetRoles
-(
-    Id               varchar(255) not null
-        primary key,
-    Name             varchar(255) null,
-    NormalizedName   varchar(255) null,
-    ConcurrencyStamp varchar(255) null
-);
-
-create table AspNetUserTokens
-(
-    UserId        varchar(255) not null,
-    LoginProvider varchar(255) not null,
-    Name          varchar(255) not null,
-    Value         varchar(255) null,
-    primary key (UserId, LoginProvider)
-);
-
-
-
 create table AspNetRoleClaims
 (
     Id         int auto_increment
@@ -38,7 +14,14 @@ create table AspNetRoleClaims
 create index RoleId
     on AspNetRoleClaims (RoleId);
 
-
+create table AspNetRoles
+(
+    Id               varchar(255) not null
+        primary key,
+    Name             varchar(255) null,
+    NormalizedName   varchar(255) null,
+    ConcurrencyStamp varchar(255) null
+);
 
 create table AspNetUserClaims
 (
@@ -86,9 +69,14 @@ create table AspNetUserRoles
 create index RoleId
     on AspNetUserRoles (RoleId);
 
-
-
-
+create table AspNetUserTokens
+(
+    UserId        varchar(255) not null,
+    LoginProvider varchar(255) not null,
+    Name          varchar(255) not null,
+    Value         varchar(255) null,
+    primary key (UserId, LoginProvider)
+);
 
 create table AspNetUsers
 (
@@ -112,13 +100,6 @@ create table AspNetUsers
         unique (Id)
 );
 
-create table Kategori
-(
-    KategoriID   int         not null
-        primary key,
-    KategoriNavn varchar(50) null
-);
-
 create table Ordre1
 (
     OrdreNr               int auto_increment
@@ -140,41 +121,71 @@ create table Ordre1
     Status                tinyint(1)     null
 );
 
-create table Sjekkliste
+create table SjekklisteElektro
 (
-    SjekklisteID int auto_increment
+    SjekklisteElektroID      int         not null
+        primary key,
+    SjekkLedningsnettPåVinsj varchar(50) null,
+    SjekkOgTestRadio         varchar(50) null,
+    SjekkOgTestKnappekasse   varchar(50) null
+);
+
+create table SjekklisteFunksjonsTest
+(
+    SjekklisteFunksjonsTestID     int         not null
+        primary key,
+    TestVinsjOgKjørAlleFunksjoner varchar(50) null,
+    TrekkkraftKN                  varchar(50) null,
+    BremseKraftKN                 varchar(50) null
+);
+
+create table SjekklisteHydraulisk
+(
+    SjekklisteHydrauliskID                  int         not null
+        primary key,
+    SjekkHydraulikkSylinderForLekkasje      varchar(50) null,
+    SjekkSlangerForSkaderOgLekkasje         varchar(50) null,
+    TestHydraulikkBlokkITestbenk            varchar(50) null,
+    SkiftOljeITank                          varchar(50) null,
+    SkiftOljePåGirBoks                      varchar(50) null,
+    SjekkRingsylinderÅpneOgSkiftTetninger   varchar(50) null,
+    SjekkBremseSylinderÅpneOgSkiftTetninger varchar(50) null
+);
+
+create table SjekklisteKommentarer
+(
+    SjekklisteKommentarerID int         not null
+        primary key,
+    Kommentar               varchar(50) null
+);
+
+create table SjekklisteMekanisk
+(
+    SjekklisteMekaniskID           int         not null
+        primary key,
+    SjekkClutchLamellerForSlitasje varchar(50) null,
+    SjekkBremserBåndPål            varchar(50) null,
+    SjekkLagerForTrommel           varchar(50) null,
+    SjekkPTOOgOpplagring           varchar(50) null,
+    SjekkKjedeStrammer             varchar(50) null,
+    SjekkWire                      varchar(50) null,
+    SjekkPinionLager               varchar(50) null,
+    SjekkKilePåKjedehjul           varchar(50) null
+);
+
+create table SjekklisteTrykkSettinger
+(
+    SjekklisteTrykkSettingerID int           not null
+        primary key,
+    xx_Bar                     varchar(5000) null
+);
+
+create table SjekklisteViewModel1
+(
+    SjekklisteID                            int auto_increment
         primary key
+ 
 );
-
-create table SjekklisteSjekkpunkt
-(
-    SjekklisteSjekkpunktID int          not null
-        primary key,
-    SjekklisteID           int          null,
-    Status                 varchar(255) null,
-    SjekkpunktID           int          null,
-    constraint SjekklisteSjekkpunkt___fk
-        foreign key (SjekklisteID) references webappdatabase2.sjekkliste (SjekklisteID),
-    constraint sjekklistesjekkpunkt_ibfk_2
-        foreign key (SjekkpunktID) references webappdatabase2.Sjekkpunkt (SjekkpunktID)
-);
-
-create index SjekkpunktID
-    on SjekklisteSjekkpunkt (SjekkpunktID);
-
-
-create table Sjekkpunkt2
-(
-    SjekkpunktID   int          not null
-        primary key,
-    SjekkpunktNavn varchar(255) null,
-    KategoriID     int          null,
-    constraint sjekkpunkt2_ibfk_1
-        foreign key (KategoriID) references webappdatabase2.Kategori (KategoriID)
-);
-
-create index KategoriID
-    on Sjekkpunkt2 (KategoriID);
 
 create table __EFMigrationsHistory
 (

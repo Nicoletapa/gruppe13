@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 namespace Nøsted.Models;
 
+
+[Table("Ordre1")]
 public class OrdreViewModel
 {
     [Key]
@@ -21,6 +23,7 @@ public class OrdreViewModel
     public DateTime ServiceFerdig { get; set; }
     public decimal AntallTimer { get; set; }
     public bool status { get; set; }
-    
+
+    private Sjekkliste sjekkliste { get; set; }
     
 }

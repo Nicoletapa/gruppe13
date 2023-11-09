@@ -1,91 +1,91 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Principal;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Nøsted.Models;
 
-public class SjekklisteViewModel
+
+[Table("Sjekkliste")]
+public class Sjekkliste
+                {
+                    [Key]
+                    public int SjekklisteID { get; set; }
+                    
+                    [ForeignKey("OrdreNr")]
+                    public int OrdreNr { get; set; }
+                    
+                    [ValidateNever] // Specify the column name in the database
+                    public OrdreViewModel Ordre { get; set; }
+                   
+                   
+                    public IEnumerable<SjekklisteSjekkpunkt>? Sjekkpunkter { get; set; } // Make sure this property is correctly defined
+                   
+                    
+                }
+[Table("Kategori")]              
+public class Kategori
+                {
+                    [Key]
+                    public int KategoriID { get; set; }
+                    public string KategoriNavn { get; set; }
+                }
+
+[Table("Sjekkpunkt2")]
+public class Sjekkpunkt 
 {
-    [Key] public int SjekklisteID { get; set; }
-    public List<SjekklisteMekanisk> sjekklisteMekanisk { get; set; }
-    public List<SjekklisteHydraulisk> sjekklisteHydraulisk { get; set; }
-    public List<SjekklisteElektro> sjekklisteElektro { get; set; }
-    public List<SjekklisteFunksjonsTest> SjekklisteFunksjonsTests { get; set; }
-    public List<SjekklisteKommentarer> sjekklisteKommentarer { get; set; }
-    public List<SjekklisteTrykkSettinger> sjekklisteTrykkSettinger { get; set; }
+                    [Key] 
+                    public int SjekkpunktID { get; set; }
+                    public string SjekkpunktNavn { get; set; }
+                    
+                    [ForeignKey("KategoriID")]
+                    public int KategoriID { get; set; } // Foreign key
+
+                     public Kategori? Kategori { get; set; }
+                     // public IEnumerator GetEnumerator()
+                     // {
+                     //     throw new NotImplementedException();
+                     // }
 }
 
 
-public class SjekklisteMekanisk
+
+[Table("SjekklisteSjekkpunkt")]
+    public class SjekklisteSjekkpunkt
+    {
+        [Key] 
+        public int SjekklisteSjekkpunktID { get; set; }
+
+        [ForeignKey("SjekklisteID")] 
+        public int SjekklisteID { get; set; }
+        
+        [ForeignKey("SjekkpunktID")] 
+        public int SjekkpunktID { get; set; }
+        
+        public string Status { get; set; }
+        public Sjekkliste sjekkliste { get; set; } // Navigation property for the related Sjekkliste entity
+        public Sjekkpunkt sjekkpunkt { get; set; } // Navigation for Sjekkpunkt 
+
+      
+    }
+
+
+
+public class CreateSjekklisteSjekkpunktViewModel
 {
-    [Key]
-    public int SjekklisteMekaniskID { get; set; }
-    public string SjekkClutchLamellerForSlitasje { get; set; }
-    public string SjekkBremserBåndPål { get; set; }
-    public string SjekkLagerForTrommel { get; set; }
-    public string SjekkPTOOgOpplagring { get; set; }
-    public string SjekkKjedeStrammer { get; set; }
-    public string SjekkWire { get; set; }
-    public string SjekkPinionLager { get; set; }
-    public string SjekkKilePåKjedehjul { get; set; }
+
+    // public List<Sjekkliste> sjekkliste { get; set; } //SjeklisteID
+    // public List<SjekklisteSjekkpunkt> sjekklisteSjekkpunkt { get; set; } //STAtus
+    // public List<Sjekkpunkt> sjekkpunkt { get; set; } //sjekkpunktID / KATEGORIID / SJEKPUNKTNAVN
+    // public List<Kategori> kategorier { get; set; }
+
+    public Sjekkliste sjekkliste { get; set; }
+    public IEnumerable<Sjekkpunkt> Sjekkpunkter { get; set; }
+    public SjekklisteSjekkpunkt sjekklisteSjekkpunkt { get; set; } 
+    public Kategori kategori { get; set; }
+    public int SjekklisteId { get; set; }
 
 }
-
-public class SjekklisteHydraulisk
-{
-    [Key]
-    public int SjekklisteHydrauliskID { get; set; }
-    public string SjekkHydraulikkSylinderForLekkasje { get; set; }
-    public string SjekkSlangerForSkaderOgLekkasje { get; set; }
-    public string TestHydraulikkBlokkITestbenk { get; set; }
-    public string SkiftOljeITank { get; set; }
-    public string SkiftOljePåGirBoks { get; set; }
-    public string SjekkRingsylinderÅpneOgSkiftTetninger { get; set; }
-    public string SjekkBremseSylinderÅpneOgSkiftTetninger { get; set; }
-
-}
-
-public class SjekklisteElektro
-{
-    [Key]
-    public int SjekklisteElektroID { get; set; }
-    public string SjekkLedningsnettPåVinsj { get; set; }
-    public string SjekkOgTestRadio { get; set; }
-    public string SjekkOgTestKnappekasse { get; set; }
-
-}
-
-public class SjekklisteTrykkSettinger
-{
-    [Key]
-    public int SjekklisteTrykkSettingerID { get; set; }
-    public string xx_Bar { get; set; }
-}
-
-public class SjekklisteFunksjonsTest
-{
-    public int SjekklisteFunksjonsTestID { get; set; }
-    public string TestVinsjOgKjørAlleFunksjoner { get; set; }
-    public string TrekkkraftKN { get; set; }
-    public string BremseKraftKN { get; set; }
-
-}
-public class SjekklisteKommentarer 
-{
-    [Key]
-    public int SjekklisteKommentarerID { get; set; }
-    public string Kommentar { get; set; }
-
-
-}
-
-
- 
-
-
-
-
-
-
-
-

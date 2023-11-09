@@ -54,11 +54,11 @@ namespace Nøsted.Controllers
         public async Task<IActionResult> Create([Bind("OrdreNr,Navn,TelefonNr,Adresse,Type,Gjelder,Epost,Uke,Registrert,Bestilling,AvtaltLevering,ProduktMotatt,AvtaltFerdigstillelse,ServiceFerdig,AntallTimer,status")] OrdreViewModel ordreViewModel)
         {
             if (ModelState.IsValid)
-           {
-                _context.Add(ordreViewModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-           }
+               {
+                    _context.Add(ordreViewModel);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+               }
             return View(ordreViewModel);
         }
         // GET: Ordre/Edit/5

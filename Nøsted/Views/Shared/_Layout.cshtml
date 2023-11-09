@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -28,6 +29,23 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Ordre" asp-action="Index">Ordre</a>
                     </li>
+                    @*@if (SignInManager<IdentityUser>.IsSignedIn(User) && User.IsInRole("Admin"))*@
+                    
+                        <li class="nav-item dropdown">
+                            <a  class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >Manage Roles
+                            </a>     
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" asp-controller="Bruker"
+                                   asp-action="ListUsers">Users</a>
+                                
+                                <a class="dropdown-item" asp-controller="Bruker"
+                                   asp-action="ListRoles">Roles</a>
+                            </div>
+                        </li>
+                        
+                    
+                    
                     
                     </ul>
                 <partial name="_LoginPartial"/>

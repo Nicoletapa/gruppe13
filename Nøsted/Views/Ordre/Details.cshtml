@@ -4,109 +4,81 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Detaljer</h1>
 
 <div>
-    <h4>OrdreViewModel</h4>
+
     <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.OrdreNr)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.OrdreNr)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Navn)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Navn)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TelefonNr)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TelefonNr)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Adresse)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Adresse)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Gjelder)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Gjelder)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Epost)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Epost)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Uke)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Uke)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Registrert)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Registrert)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Bestilling)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Bestilling)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AvtaltLevering)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AvtaltLevering)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProduktMotatt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProduktMotatt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AvtaltFerdigstillelse)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AvtaltFerdigstillelse)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ServiceFerdig)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ServiceFerdig)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AntallTimer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AntallTimer)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.status)
-        </dd>
-    </dl>
+    <table class="table">
+        <tr>
+            <th>Property</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>OrdreNr</td>
+            <td>@Html.DisplayFor(model => model.OrdreNr)</td>
+        </tr>
+        <tr>
+            <td>Navn</td>
+            <td>@Html.DisplayFor(model => model.Navn)</td>
+        </tr>
+        <tr>
+            <td>TelefonNr</td>
+            <td>@Html.DisplayFor(model => model.TelefonNr)</td>
+        </tr>
+        <tr>
+            <td>Adresse</td>
+            <td>@Html.DisplayFor(model => model.Adresse)</td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            <td>@Html.DisplayFor(model => model.Type)</td>
+        </tr>
+        <tr>
+            <td>Gjelder</td>
+            <td>@Html.DisplayFor(model => model.Gjelder)</td>
+        </tr>
+        <tr>
+            <td>Epost</td>
+            <td>@Html.DisplayFor(model => model.Epost)</td>
+        </tr>
+        <tr>
+            <td>Uke</td>
+            <td>@Html.DisplayFor(model => model.Uke)</td>
+        </tr>
+        <tr>
+            <td>Registrert</td>
+            <td>@Html.DisplayFor(model => model.Registrert)</td>
+        </tr>
+        <tr>
+            <td>Bestilling</td>
+            <td>@Html.DisplayFor(model => model.Bestilling)</td>
+        </tr>
+        <tr>
+            <td>Avtalt Levering</td>
+            <td>@Html.DisplayFor(model => model.AvtaltLevering)</td>
+        </tr>
+        <tr>
+            <td>Produkt motatt</td>
+            <td>@Html.DisplayFor(model => model.ProduktMotatt)</td>
+        </tr>
+        <tr>
+            <td>Avtalt ferdigstillelse</td>
+            <td>@Html.DisplayFor(model => model.AvtaltFerdigstillelse)</td>
+        </tr>
+        <tr>
+            <td>Service ferdig</td>
+            <td>@Html.DisplayFor(model => model.ServiceFerdig)</td>
+        </tr>
+        <tr>
+            <td>Antall timer</td>
+            <td>@Html.DisplayFor(model => model.AntallTimer)</td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td>@Html.DisplayFor(model => model.status)</td>
+        </tr>
+    </table>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.OrdreNr">Edit</a> |

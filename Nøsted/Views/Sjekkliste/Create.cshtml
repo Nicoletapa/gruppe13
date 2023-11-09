@@ -1,317 +1,64 @@
-@model Nøsted.Models.SjekklisteViewModel;
-@{
-    ViewData["Title"] = "Create";
-}
+@using Microsoft.CodeAnalysis.Elfie.Model.Map
+@model CreateSjekklisteSjekkpunktViewModel
 
-<h2>Create</h2>
+<!-- Your other form elements -->
 
-<form asp-action="Create">
+@*<div class="form-group">
+    <label for="sjekkpunktId">Sjekkpunkt:</label>
+    @if (Model.Sjekkpunkter != null)
+    {
+        <select asp-for="sjekklisteSjekkpunkt.sjekkpunkt.SjekkpunktID" asp-items="@(new SelectList(Model.Sjekkpunkter, "SjekkpunktId", "SjekkpunktNavn"))" class="form-control"></select>
+    }
+    else
+    {
+        <p>No Sjekkpunkter available.</p>
+    }
+</div>*@
+<a asp-action="Create" asp-route-orderId="@Model.SjekklisteId">Create Checklist</a>
+
+
+<form  >
+<div class="form-group">
+    <label for="SjekklisteId">Sjekkliste ID:</label>
+    <input asp-for="SjekklisteId" class="form-control" readonly />
+</div>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col"> </th>
+            <th scope="col">Sjekkpunkter</th>
+            <th scope="col">Ok</th>
+            <th scope="col">Bør Skiftes</th>
+            <th scope="col">Defekt</th>
+                               
+
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Sjekkpunkter)
+        {
+            <tr>
+                <td>@item.KategoriID</td>
+                <td>@item.SjekkpunktNavn</td>
+                <td>
+                    <input type="radio" name="statusRadio_@item.SjekkpunktID" value="Ok" />
+                </td>
+                
+                <td>
+                    <input type="radio" name="statusRadio_@item.SjekkpunktID." value="Bør Skiftes" />
+                </td>
+                
+                <td>
+                    <input type="radio" name="statusRadio_@item.SjekkpunktID" value="Defekt" />
+                </td>
+                
+            </tr>
+        }
+        </tbody>
+    </table>
     <div class="form-group">
-        <label asp-for="SjekklisteID"></label>
-        <input asp-for="SjekklisteID" class="form-control" />
-        <span asp-validation-for="SjekklisteID" class="text-danger"></span>
+        <input type="submit" value="Create" class="btn btn-primary" />
     </div>
-
-    <h3>Sjekkliste</h3>
-
-<table class="table">
-<thead>
-<tr>
-    <th scope="col"> </th>
-    <th scope="col">Sjekkpunkter</th>
-    <th scope="col">Ok</th>
-    <th scope="col">Bør Skiftes</th>
-    <th scope="col">Defekt</th>
-                   
-</tr>
-</thead>
-           
-<tbody>
-<tr>
-    <th scope="row" rowspan="8" class="align-middle">Mekanisk</th>
-    <td>Sjekk clutch lameller for slitasje</td>
-    
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkClutchLamellerForSlitasje" id="SjekkClutchLamellerForSlitasjeOK" value="Ok"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkClutchLamellerForSlitasje" id="SjekkClutchLamellerForSlitasjeBørSkiftes" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkClutchLamellerForSlitasje" id="SjekkClutchLamellerForSlitasjeDefekt" value="Defekt"/>
-    </td>
-</tr>
-           
-<tr>
-    <td>Sjekk bremser. Bånd/pål</td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkBremserBåndPål" id="SjekkBremserBåndPålOk" value="Ok"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkBremserBåndPål" id="SjekkBremserBåndPålBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkBremserBåndPål" id="SjekkBremserBåndPålD" value="Defekt"/>
-    </td>
-</tr>
-           
-<tr>
-    <td>Sjekk lager for trommel</td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkLagerForTrommel" id="SjekkLagerForTrommelOk" value="Ok"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkLagerForTrommel" id="SjekkLagerForTrommelBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkLagerForTrommel" id="SjekkLagerForTrommelD" value="Defekt"/>
-    </td>
-</tr>
-           
-<tr>
-    <td>Sjekk PTO og opplagring</td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkPTOOgOpplagring" id="SjekkPTOOgOpplagringOk" value="Ok"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkPTOOgOpplagring" id="SjekkPTOOgOpplagringBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkPTOOgOpplagring" id="SjekkPTOOgOpplagringD" value="Defekt"/>
-    </td>
-</tr> 
-           
-<tr>
-    <td>Sjekk kjede strammer</td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkKjedeStrammer" id="SjekkKjedeStrammerOk" value="Ok"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkKjedeStrammer" id="SjekkKjedeStrammerBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkKjedeStrammer" id="SjekkKjedeStrammerD" value="Defekt"/>
-    </td>
-</tr>
-           
-<tr>
-    <td>Sjekk wire</td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkWire" id="SjekkWireOk" value="Ok"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkWire" id="SjekkWireBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkWire" id="SjekkWireD" value="Defekt"/>
-    </td>
-</tr>
-           
-<tr>
-    <td>Sjekk pinion lager</td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkPinionLager" id="SjekkPinionLagerOk" value="OK"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkPinionLager" id="SjekkPinionLagerBS" value="Bør Skiftes"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkPinionLager" id="SjekkPinionLagerD" value="Defekt"/>
-    </td>
-</tr>
-           
-<tr>
-    <td>Sjekk kile på kjedehjul</td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkKilePåKjedehjul" id="SjekkKilePåKjedehjulOk" value="Ok"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkKilePåKjedehjul" id="SjekkKilePåKjedehjulBS" value="Bør Skiftes"/>
-    </td>
-    <td>
-        <input asp-for="sjekklisteMekanisk" class="form-check-input" type="radio" name="SjekkKilePåKjedehjul" id="SjekkKilePåKjedehjulD" value="Defekt"/>
-    </td>
-</tr>
-           
-<tr>
-    <th scope="row" rowspan="7" class="align-middle">Hydraulisk</th>
-    <td>Sjekk hydraulikk sylinder for lekkasje</td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkHydraulikkSylinderForLekkasje" id="SjekkHydraulikkSylinderForLekkasjeOK" value="Ok"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkHydraulikkSylinderForLekkasje" id="SjekkHydraulikkSylinderForLekkasjeBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkHydraulikkSylinderForLekkasje" id="SjekkHydraulikkSylinderForLekkasjeD" value="Defekt"/>
-    </td>
-</tr>
-           
-<tr>
-    <td>Sjekk slanger for skader og lekkasje</td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkSlangerForSkaderOgLekkasje" id="SjekkSlangerForSkaderOgLekkasjeOk" value="Ok"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkSlangerForSkaderOgLekkasje" id="SjekkSlangerForSkaderOgLekkasjeBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkSlangerForSkaderOgLekkasje" id="SjekkSlangerForSkaderOgLekkasjeD" value="Defekt"/>
-    </td>
-</tr>
-               
-<tr>
-    <td>Test hydraulikk blokk i testbenk</td>
-    <td>
-        <input class="form-check-input" type="radio" name="TestHydraulikkBlokkITestbenk" id="TestHydraulikkBlokkITestbenkOk" value="Ok"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="TestHydraulikkBlokkITestbenk" id="TestHydraulikkBlokkITestbenkBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="TestHydraulikkBlokkITestbenk" id="TestHydraulikkBlokkITestbenkD" value="Defekt"/>
-    </td>
-</tr>
-           
-               
-<tr>
-    <td>Skift olje i tank</td>
-    <td>
-        <input class="form-check-input" type="radio" name="SkiftOljeITank" id="SkiftOljeITankOk" value="Ok"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SkiftOljeITank" id="SkiftOljeITankBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SkiftOljeITank" id="SkiftOljeITankD" value="Defekt"/>
-    </td>
-</tr> 
-           
-               
-<tr>
-    <td>Skift olje på gir boks</td>
-    <td>
-        <input class="form-check-input" type="radio" name="SkiftOljePåGirBoks" id="SkiftOljePåGirBoksOk" value="Ok"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SkiftOljePåGirBoks" id="SkiftOljePåGirBoksBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SkiftOljePåGirBoks" id="SkiftOljePåGirBoksD" value="Defekt"/>
-    </td>
-</tr>
-           
-               
-<tr>
-                    
-    <td>Sjekk ringsylinder åpne og skift tetninger</td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkRingsylinderÅpneOgSkiftTetninger" id="SjekkRingsylinderÅpneOgSkiftTetningerOk" value="Ok"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkRingsylinderÅpneOgSkiftTetninger" id="SjekkRingsylinderÅpneOgSkiftTetningerBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkRingsylinderÅpneOgSkiftTetninger" id="SjekkRingsylinderÅpneOgSkiftTetningerD" value="Defekt"/>
-    </td>
-</tr>
-           
-               
-<tr>
-                    
-    <td>Sjekk bremse sylinder åpne og skift tetninger</td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkBremseSylinderÅpneOgSkiftTetninger" id="SjekkBremseSylinderÅpneOgSkiftTetningerOk" value="Ok"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkBremseSylinderÅpneOgSkiftTetninger" id="SjekkBremseSylinderÅpneOgSkiftTetningerBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkBremseSylinderÅpneOgSkiftTetninger" id="SjekkBremseSylinderÅpneOgSkiftTetningerD" value="Defekt"/>
-    </td>
-</tr>
-           
-<tr>
-    <th scope="row" rowspan="3" class="align-middle">Elektro</th>
-    <td>Sjekk ledningsnett på vinsj</td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkLedningsnettPåVinsj" id="SjekkLedningsnettPåVinsjOK" value="Ok"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkLedningsnettPåVinsj" id="SjekkLedningsnettPåVinsjBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkLedningsnettPåVinsj" id="SjekkLedningsnettPåVinsjD" value="Defekt"/>
-    </td>
-</tr>
-               
-<tr>
-    <td>Sjekk og test radio</td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkOgTestRadio" id="SjekkOgTestRadioOk" value="Ok"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkOgTestRadio" id="SjekkOgTestRadioBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkOgTestRadio" id="SjekkOgTestRadioD" value="Defekt"/>
-    </td>
-</tr>
-               
-<tr>
-    <td>Sjekk og test knappekasse</td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkOgTestKnappekasse" id="SjekkOgTestKnappekasseOk" value="Ok"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkOgTestKnappekasse" id="SjekkOgTestKnappekasseBS" value="Bør skiftes"/>
-    </td>
-    <td>
-        <input class="form-check-input" type="radio" name="SjekkOgTestKnappekasse" id="SjekkOgTestKnappekasseD" value="Defekt"/>
-    </td>
-</tr>
-<tr>
-    <th scope="row" rowspan="1" class="align-middle">Trykk Settinger</th>
-    <td>Xx_Bar</td>
-    <td colspan="3">
-        <input  class="form-control" aria-label="xx_Bar">
-    </td>
-</tr>
-           
-<tr>
-    <th scope="row" rowspan="3" class="align-middle">funksjonstest</th>
-    <td>Test vinsj og kjør alle funksjoner</td>
-    <td colspan="3">
-        <input  class="form-control" aria-label="Test Vinsj Og Kjør Alle Funksjoner">
-    </td>
-</tr>
-           
-<tr>
-    <td>Trekk kraft KN</td>
-    <td colspan="3">
-        <input  class="form-control" aria-label="TrekkkraftKN">
-    </td>
-</tr>
-           
-<tr>
-    <td>Bremse kraft KN</td>
-    <td colspan="3">
-        <input  class="form-control" aria-label="BremseKraftKN">
-    </td>
-</tr>
-           
-<tr>
-    <td>Kommentar</td>
-    <td colspan="4">
-        <input  class="form-control" aria-label="Kommentar">
-    </td>
-</tr>
-</table>
-    
-    
-    
-    
-
-    <div asp-validation-summary="All"></div>
-    <input type="submit" value="Create" class="btn btn-primary" />
-</form>
+    @Html.ValidationSummary()
+    </form>

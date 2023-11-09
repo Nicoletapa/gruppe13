@@ -1,84 +1,66 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Nøsted.Models;
 
 namespace Nøsted.Data;
 
-public class ApplicationDbContext : IdentityDbContext
-{
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
-    }
-    public DbSet<OrdreViewModel> Ordre1 { get; set; } = default!;
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
 
+        public DbSet<OrdreViewModel> Ordre1 { get; set; } = default!;
 
-    public DbSet<SjekklisteViewModel> SjekklisteViewModel1 { get; set; } = default!;
-    public DbSet<SjekklisteMekanisk> sjekklisteMekanisk { get; set; } = default!;
-    public DbSet<SjekklisteHydraulisk> sjekklisteHydraulisk { get; set; } = default!;
-
-    public DbSet<SjekklisteElektro> sjekklisteElektro { get; set; } = default!;
-
-    public DbSet<SjekklisteFunksjonsTest> SjekklisteFunksjonsTest { get; set; } = default!;
-
-    public DbSet<SjekklisteTrykkSettinger> sjekklisteTrykkSettinger { get; set; } = default!;
-
-    public DbSet<SjekklisteKommentarer> sjekklisteKommentarer { get; set; } = default!;
-
-
+        public DbSet<Sjekkliste> Sjekkliste { get; set; }
+        public DbSet<Kategori> Kategori { get; set; }
+        public DbSet<Sjekkpunkt> Sjekkpunkt2 { get; set; }
+        public DbSet<SjekklisteSjekkpunkt> SjekklisteSjekkpunkt { get; set; }
+        public DbSet<Bruker> bruker { get; set; } = default!;
+    
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure one-to-one relationships for each related class
-            /*modelBuilder.Entity<SjekklisteViewModel>()
-                .HasOne(vm => vm.SjekklisteMekanisk)
-                .WithOne(m => m.SjekklisteViewModel)
-                .HasForeignKey<SjekklisteMekanisk>(m => m.SjekklisteViewModelID);
+            modelBuilder.Entity<SjekklisteSjekkpunkt>()
+                .HasKey(ss => ss.SjekklisteSjekkpunktID);
 
-            modelBuilder.Entity<SjekklisteViewModel>()
-                .HasOne(vm => vm.SjekklisteHydraulisk)
-                .WithOne(h => h.SjekklisteViewModel)
-                .HasForeignKey<SjekklisteHydraulisk>(h => h.SjekklisteViewModelID);
+            modelBuilder.Entity<SjekklisteSjekkpunkt>()
+                .HasOne(j => j.sjekkliste)
+                .WithMany(s => s.Sjekkpunkter)
+                .HasForeignKey(j => j.SjekklisteID);
 
-            modelBuilder.Entity<SjekklisteViewModel>()
-                .HasOne(vm => vm.SjekklisteElektro)
-                .WithOne(e => e.SjekklisteViewModel)
-                .HasForeignKey<SjekklisteElektro>(e => e.SjekklisteViewModelID);
 
-            modelBuilder.Entity<SjekklisteViewModel>()
-                .HasOne(vm => vm.SjekklisteTrykkSettinger)
-                .WithOne(ts => ts.SjekklisteViewModel)
-                .HasForeignKey<SjekklisteTrykkSettinger>(ts => ts.SjekklisteViewModelID);
+            modelBuilder.Entity<SjekklisteSjekkpunkt>()
+                .HasOne(s => s.sjekkpunkt)
+                .WithMany()
+                .HasForeignKey(s => s.SjekkpunktID);
 
-            modelBuilder.Entity<SjekklisteViewModel>()
-                .HasOne(vm => vm.SjekklisteFunksjonsTest)
-                .WithOne(ft => ft.SjekklisteViewModel)
-                .HasForeignKey<SjekklisteFunksjonsTest>(ft => ft.SjekklisteViewModelID);
+            modelBuilder.Entity<Sjekkliste>()
+                .HasMany(s => s.Sjekkpunkter)
+                .WithOne(p => p.sjekkliste);
+                
+            modelBuilder.Entity<Sjekkliste>()
+                .HasOne(s => s.Ordre)
+                .WithMany()
+                .HasForeignKey(s => s.OrdreNr);
 
-            modelBuilder.Entity<SjekklisteViewModel>()
-                .HasOne(vm => vm.SjekklisteKommentarer)
-                .WithOne(k => k.SjekklisteViewModel)
-                .HasForeignKey<SjekklisteKommentarer>(k => k.SjekklisteViewModelID);*/
+            
+                
+                
+            modelBuilder.Entity<Bruker>().HasDiscriminator().HasValue("");
+  
+
+            // Define primary key for Sjekkpunkt entity
+            modelBuilder.Entity<Sjekkpunkt>().HasKey(p => p.SjekkpunktID);
+
             base.OnModelCreating(modelBuilder);
         }
-
-     /*
-     protected override void OnModelCreating(ModelBuilder modelBuilder)
-     {
-    //     modelBuilder.Entity<SjekklisteViewModel>().HasNoKey();
-    modelBuilder.Entity<SjekklisteViewModel>()
-        .HasOne(vm => vm.SjekklisteFunksjonsTest) // One SjekklisteViewModel has one SjekklisteFunksjonsTest
-        .WithOne(ft => ft.SjekklisteViewModel);
-       
+        
     
-     }
-    //    modelBuilder.Entity<ArbeidsDokumentViewModel>()
-    //        .HasOne(ad => ad.Ordre)
-    //      .WithMany()
-    //    .HasForeignKey(ad => ad.OrdreID);
-    */
-
-    
+        
      
-
-}
+    }

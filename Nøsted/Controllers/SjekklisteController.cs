@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Nøsted.Data;
 using Nøsted.Models;
 
@@ -12,10 +13,8 @@ namespace Nøsted.Controllers
 {
     public class SjekklisteController : Controller
     {
-        
-        
         private readonly ApplicationDbContext _context;
-        
+
         public SjekklisteController(ApplicationDbContext context)
         {
             _context = context;
@@ -24,201 +23,182 @@ namespace Nøsted.Controllers
         // GET: Sjekkliste
         public async Task<IActionResult> Index()
         {
-              return _context.SjekklisteViewModel1 != null ? 
-                          View(await _context.SjekklisteViewModel1.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.SjekklisteViewModels'  is null.");
+            var viewModel = new CreateSjekklisteSjekkpunktViewModel
+            {
+
+                sjekklisteSjekkpunkt = await _context.SjekklisteSjekkpunkt.FirstOrDefaultAsync()
+            };
+            return View(viewModel);
+            
+
         }
 
         // GET: Sjekkliste/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.SjekklisteViewModel1 == null)
+            if (id == null || _context.Sjekkliste == null)
             {
                 return NotFound();
             }
 
-            var sjekklisteViewModel = await _context.SjekklisteViewModel1
+            var sjekkliste = await _context.Sjekkliste
                 .FirstOrDefaultAsync(m => m.SjekklisteID == id);
-            if (sjekklisteViewModel == null)
+            if (sjekkliste == null)
             {
                 return NotFound();
             }
 
-            return View(sjekklisteViewModel);
-        }
-
-        // GET: Sjekkliste/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Sjekkliste/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        /*[HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SjekklisteID, sjekklisteMekanisk, sjekklisteHydraulisk, sjekklisteElektro, sjekklisteTrykkSettinger, SjekklisteFunksjonsTests, sjekklisteKommentarer")] SjekklisteViewModel sjekklisteViewModel)
-        {
-             if (ModelState.IsValid)
-            {
-             var sjekklisteViewModel1 = new SjekklisteViewModel()
-                            {
-                                sjekklisteMekanisk = new List<SjekklisteMekanisk>(),
-                                sjekklisteHydraulisk = new List<SjekklisteHydraulisk>(),
-                                sjekklisteElektro = new List<SjekklisteElektro>(),
-                                sjekklisteTrykkSettinger = new List<SjekklisteTrykkSettinger>(),
-                                SjekklisteFunksjonsTests = new List<SjekklisteFunksjonsTest>(),
-                                sjekklisteKommentarer = new List<SjekklisteKommentarer>()
-                                
-                            };
-                
-                _context.Add(sjekklisteViewModel1);
-
-                // Save changes to the database.
-                await _context.SaveChangesAsync();
-                
-                return RedirectToAction(nameof(Index));
-           
-                 }
-             
-             
-            // If the ModelState is not valid, return to the Create view.
-           return View(sjekklisteViewModel);
-        }*/
+            return View(sjekkliste);
+        } 
         
+        [HttpGet]
+        public async Task<IActionResult> Create(int orderId)
+        {
+            // Assuming you have some logic to retrieve an existing OrdreViewModel based on your requirements
+            var existingSjekkliste = await _context.Sjekkliste
+                .FirstOrDefaultAsync(s => s.OrdreNr == orderId);
+
+            if (existingSjekkliste == null)
+            {
+                // If no checklist exists for the given orderID, create a new one
+                var newSjekkliste = new Sjekkliste
+                {
+                    OrdreNr = orderId,
+                    
+                    // other properties...
+                };
+
+                _context.Sjekkliste.Add(newSjekkliste);
+                await _context.SaveChangesAsync();
+
+                existingSjekkliste = newSjekkliste;
+            }
+
+            var sjekkpunkter = await _context.Sjekkpunkt2.ToListAsync();
+
+            var viewModel = new CreateSjekklisteSjekkpunktViewModel
+            {
+                sjekklisteSjekkpunkt = new SjekklisteSjekkpunkt
+                {
+                    sjekkliste = existingSjekkliste,
+                    sjekkpunkt = new Sjekkpunkt(),
+                    Status = "ok"
+                },
+                Sjekkpunkter = sjekkpunkter,
+                SjekklisteId = existingSjekkliste.SjekklisteID // Set the SjekklisteId in the view model
+            };
+
+            return View(viewModel);
+        }
+
+
+        // POST: api/Sjekkliste/CreateChecklist
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SjekklisteID, sjekklisteMekanisk, sjekklisteHydraulisk, SjekklisteFunksjonsTests, sjekklisteElektro, sjekklisteTrykkSettinger ")]SjekklisteViewModel sjekklisteViewModel)
+        public async Task<IActionResult> Create(CreateSjekklisteSjekkpunktViewModel viewModel)
         {
-          //  Remove ModelState errors for the lists that you're handling separately
-            ModelState.Remove("sjekklisteMekanisk");
-            ModelState.Remove("sjekklisteHydraulisk");
-            ModelState.Remove("sjekklisteElektro");
-            ModelState.Remove("sjekklisteTrykkSettinger");
-            ModelState.Remove("SjekklisteFunksjonsTests");
-            ModelState.Remove("sjekklisteKommentarer");
-            // ModelState.Remove("SjekklisteMekaniskID");
-            // ModelState.Remove("SjekklisteHydrauliskID");
-            // ModelState.Remove("SjekklisteElektroID");
-            // ModelState.Remove("SjekklisteFunksjonsTestID");
-            // ModelState.Remove("SjekklisteTrykkSettingerID");
-            // ModelState.Remove("SjekklisteKommentarerID");
-             
-
             if (ModelState.IsValid)
             {
-                try
-                {
+                // Assuming SjekklisteSjekkpunkt has a Status property that you want to set
+                viewModel.sjekklisteSjekkpunkt.Status = "Ok"; // Set the default status here or get it from the form
 
-                    var mekanisk = new SjekklisteMekanisk
-                    {
-                        
-                        SjekkClutchLamellerForSlitasje = Request.Form["SjekkClutchLamellerForSlitasje"],
-                        SjekkBremserBåndPål = Request.Form["SjekkBremserBåndPål"],
-                        SjekkLagerForTrommel = Request.Form["SjekkLagerForTrommel"],
-                        SjekkPTOOgOpplagring = Request.Form["SjekkPTOgOppagring"],
-                        SjekkWire = Request.Form["SjekkWire"],
-                        SjekkPinionLager = Request.Form["SjekkPinionLager"],
-                        SjekkKjedeStrammer = Request.Form["SjekkKjedeStrammer"],
-                        SjekkKilePåKjedehjul = Request.Form["SjekkKilePåKjedehjul"]
-                    };
+                // Add the new SjekklisteSjekkpunkt to the context and save changes
+                _context.SjekklisteSjekkpunkt.Add(viewModel.sjekklisteSjekkpunkt);
+                await _context.SaveChangesAsync();
 
-                   
-
-                    var hydraulisk = new SjekklisteHydraulisk
-                    {
-                        SkiftOljeITank = Request.Form["SkiftOljeITank"],
-                        SjekkHydraulikkSylinderForLekkasje = Request.Form["SjekkHydraulikkSylinderForLekkasje"],
-                        SkiftOljePåGirBoks = Request.Form["SkiftOljePåGirBoks"],
-                        SjekkRingsylinderÅpneOgSkiftTetninger = Request.Form["SjekkRingsylinderÅpneOgSkiftTetninger"],
-                        SjekkSlangerForSkaderOgLekkasje = Request.Form["SjekkSlangerForSkaderOgLekkasje"],
-                        SjekkBremseSylinderÅpneOgSkiftTetninger = Request.Form["SjekkBremseSylinderÅpneOgSkiftTetninger"],
-                        TestHydraulikkBlokkITestbenk = Request.Form["TestHydraulikkBlokkITestbenk"]
-
-                    };
-
-                    var elektro = new SjekklisteElektro
-                    {
-                        SjekkLedningsnettPåVinsj = Request.Form["SjekkLedningsnettPåVinsj"],
-                        SjekkOgTestKnappekasse = Request.Form["SjekkOgTestKnappekasse"],
-                        SjekkOgTestRadio = Request.Form["SjekkOgTestRadio"]
-                    };
-                    
-                    var trykkSettinger = new SjekklisteTrykkSettinger
-                    {
-                        xx_Bar = Request.Form["xx_Bar"]
-
-                    };
-
-                    var funksjonsTest = new SjekklisteFunksjonsTest
-                    {
-                        TestVinsjOgKjørAlleFunksjoner = Request.Form["TestVinsjOgKjørAlleFunksjoner"],
-                        BremseKraftKN = Request.Form["BremseKraftKN"],
-                        TrekkkraftKN = Request.Form["TrekkkraftKN"]
-
-                    };
-                    var kommentarer = new SjekklisteKommentarer
-                    {
-                        Kommentar = Request.Form["Kommentar"]
-                    };
-
-                    sjekklisteViewModel.sjekklisteMekanisk.Add(mekanisk);
-                    sjekklisteViewModel.sjekklisteHydraulisk.Add(hydraulisk);
-                    sjekklisteViewModel.sjekklisteElektro.Add(elektro);
-                    sjekklisteViewModel.sjekklisteTrykkSettinger.Add(trykkSettinger);
-                    sjekklisteViewModel.SjekklisteFunksjonsTests.Add(funksjonsTest);
-                    sjekklisteViewModel.sjekklisteKommentarer.Add(kommentarer);
-                    
-                    
-
-                    // Add your sjekklisteViewModel to the context
-                    _context.Add(sjekklisteViewModel);
-
-                    // Save changes to the database
-                    await _context.SaveChangesAsync();
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    // Handle any exceptions that might occur during data processing.
-                    ModelState.AddModelError(string.Empty, "An error occurred while saving data: " + ex.Message);
-                }
+                // Redirect to the desired action after successfully creating the SjekklisteSjekkpunkt
+                return RedirectToAction("Index");
             }
 
-            // If the ModelState is not valid, return to the Create view.
-            return View(sjekklisteViewModel);
+            // If the ModelState is not valid, return to the Create view with the same viewModel
+            return View(viewModel);
         }
-
-
         
-
-
-        // GET: Sjekkliste/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        /*
+        [HttpGet] 
+        public async Task<IActionResult> Create()
         {
-            if (id == null || _context.SjekklisteViewModel1 == null)
+
+        var viewModel = new CreateSjekklisteSjekkpunktViewModel
+        {
+            sjekklisteSjekkpunkt = new SjekklisteSjekkpunkt()
             {
-                return NotFound();
+                sjekkliste = new Sjekkliste(),
+                sjekkpunkt = new Sjekkpunkt(),
+                    
+                    
+            },
+            
+        };
+        _context.SjekklisteSjekkpunkt.ToListAsync();
+        _context.SaveChangesAsync();
+            
+        return View(viewModel);
+    }
+        
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(CreateSjekklisteSjekkpunktViewModel viewModel)
+    {
+        if (ModelState.IsValid)
+        {
+            // Assuming SjekklisteSjekkpunkt has a Status property that you want to set
+            viewModel.sjekklisteSjekkpunkt.Status = viewModel.sjekklisteSjekkpunkt.Status; // Set the default status here or get it from the form
+
+            // Add the new SjekklisteSjekkpunkt to the context and save changes
+            _context.SjekklisteSjekkpunkt.Add(viewModel.sjekklisteSjekkpunkt);
+            await _context.SaveChangesAsync();
+
+            // Redirect to the desired action after successfully creating the SjekklisteSjekkpunkt
+            return RedirectToAction("Index");
+        }
+
+        // If the ModelState is not valid, return to the Create view with the same viewModel
+        return View(viewModel);
+    }
+    */
+
+
+
+        /*[HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(int SjekklisteID, int SjekkpunktID, string status)
+        {
+            // Find the corresponding checklist and checkpoint
+            var sjekkliste = await _context.Sjekkliste.FindAsync(SjekklisteID);
+            var sjekkpunkt = await _context.Sjekkpunkt2.FindAsync(SjekkpunktID);
+
+            if (sjekkliste == null || sjekkpunkt == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid Sjekkliste or Sjekkpunkt selection.");
+                return NotFound(); // Handle not found cases
             }
 
-            var sjekklisteViewModel = await _context.SjekklisteViewModel1.FindAsync(id);
-            if (sjekklisteViewModel == null)
-            {
-                return NotFound();
+                // Create a new SjekklisteSjekkpunkt with the provided status
+                var sjekklisteSjekkpunkt = new SjekklisteSjekkpunkt
+                {
+                    Sjekkliste = sjekkliste,
+                    sjekkpunkter = sjekkpunkt,
+                    Status = status
+                };
+
+                _context.SjekklisteSjekkpunkt.Add(sjekklisteSjekkpunkt);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index"); // Redirect to the appropriate view
             }
-            return View(sjekklisteViewModel);
-        }
+            */
+
+     
 
         // POST: Sjekkliste/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SjekklisteID")] SjekklisteViewModel sjekklisteViewModel)
+        public async Task<IActionResult> Edit(int id, [Bind("SjekklisteID")] Sjekkliste sjekkliste)
         {
-            if (id != sjekklisteViewModel.SjekklisteID)
+            if (id != sjekkliste.SjekklisteID)
             {
                 return NotFound();
             }
@@ -227,12 +207,12 @@ namespace Nøsted.Controllers
             {
                 try
                 {
-                    _context.Update(sjekklisteViewModel);
+                    _context.Update(sjekkliste);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SjekklisteViewModelExists(sjekklisteViewModel.SjekklisteID))
+                    if (!SjekklisteExists(sjekkliste.SjekklisteID))
                     {
                         return NotFound();
                     }
@@ -243,25 +223,25 @@ namespace Nøsted.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(sjekklisteViewModel);
+            return View(sjekkliste);
         }
 
         // GET: Sjekkliste/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.SjekklisteViewModel1 == null)
+            if (id == null || _context.Sjekkliste == null)
             {
                 return NotFound();
             }
 
-            var sjekklisteViewModel = await _context.SjekklisteViewModel1
+            var sjekkliste = await _context.Sjekkliste
                 .FirstOrDefaultAsync(m => m.SjekklisteID == id);
-            if (sjekklisteViewModel == null)
+            if (sjekkliste == null)
             {
                 return NotFound();
             }
 
-            return View(sjekklisteViewModel);
+            return View(sjekkliste);
         }
 
         // POST: Sjekkliste/Delete/5
@@ -269,23 +249,23 @@ namespace Nøsted.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.SjekklisteViewModel1 == null)
+            if (_context.Sjekkliste == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.SjekklisteViewModels'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Sjekkliste'  is null.");
             }
-            var sjekklisteViewModel = await _context.SjekklisteViewModel1.FindAsync(id);
-            if (sjekklisteViewModel != null)
+            var sjekkliste = await _context.Sjekkliste.FindAsync(id);
+            if (sjekkliste != null)
             {
-                _context.SjekklisteViewModel1.Remove(sjekklisteViewModel);
+                _context.Sjekkliste.Remove(sjekkliste);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SjekklisteViewModelExists(int id)
+        private bool SjekklisteExists(int id)
         {
-          return (_context.SjekklisteViewModel1?.Any(e => e.SjekklisteID == id)).GetValueOrDefault();
+          return (_context.Sjekkliste?.Any(e => e.SjekklisteID == id)).GetValueOrDefault();
         }
     }
 }
