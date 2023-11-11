@@ -86,8 +86,6 @@ public class CreateSjekklisteSjekkpunktViewModel
     [ValidateNever]
     public List<Sjekkpunkt> Sjekkpunkter { get; set; } = new();
 
-    // public List<SjekkpunktGroup> GroupedSjekkpunkter { get; set; } = new();
-
     [ValidateNever]
     public SjekklisteSjekkpunkt sjekklisteSjekkpunkt { get; set; } 
     [ValidateNever]

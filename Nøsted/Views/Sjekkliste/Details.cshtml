@@ -1,24 +1,45 @@
 @model CreateSjekklisteSjekkpunktViewModel
 
 @{
-    ViewData["Title"] = "Checklist Details";
+    ViewData["Title"] = "Sjekkliste detaljer";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<table class="table">
+<style>
+   .radio {
+           transform: scale(1.5); /* Increase the size of radio buttons */
+           margin: 5px; /* Add some margin around the buttons */
+           vertical-align: middle;
+       }
+    
+</style>
+
+<table class="table table-hover " >
     <thead>
     <tr>
         <th>Sjekkpunkt</th>
-        <th>Status</th>
+        <th>OK</th>
+        <th class="text-center">Bør skiftes</th>
+        <th class="text-center">Defekt</th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var sjekkpunkt in Model.SjekkpunkterWithStatus)
+    @for (int i = 0; i < Model.SjekkpunkterWithStatus.Count; i++)
     {
         <tr>
-            <td>@sjekkpunkt.Sjekkpunkt.SjekkpunktNavn</td>
-            <td>@sjekkpunkt.Status</td>
+            <td>
+                @Html.DisplayFor(model => model.SjekkpunkterWithStatus[i].Sjekkpunkt.SjekkpunktNavn)
+            </td>
+            <td >
+                <input type="radio" name="status_@i" id="status_ok_@i"  @(Model.SjekkpunkterWithStatus[i].Status == "OK" ? "checked" : "") class="radio" />
+            </td>
+            <td class="text-center" >
+                <input type="radio" name="status_@i" id="status_borskiftes_@i"  @(Model.SjekkpunkterWithStatus[i].Status == "Bør skiftes" ? "checked" : "") class="radio" />
+            </td>
+            <td class="align-middle text-center">
+                <input type="radio" name="status_@i" id="status_defekt_@i" @(Model.SjekkpunkterWithStatus[i].Status == "Defekt" ? "checked" : "") class="radio" />
+            </td>
         </tr>
     }
     </tbody>

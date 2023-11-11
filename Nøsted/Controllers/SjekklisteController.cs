@@ -81,9 +81,7 @@ public async Task<IActionResult> Create(int orderId)
     }
 
     var newSjekklisteId = Guid.NewGuid();
-    var sjekkpunkter = await _context.Sjekkpunkt
-        .Include(sp => sp.Kategori)
-        .ToListAsync();
+    var sjekkpunkter = await _context.Sjekkpunkt.ToListAsync();
     var sjekklisteSjekkpunktList = new List<SjekklisteSjekkpunkt>();
     
     foreach (var sjekkpunkt in sjekkpunkter)

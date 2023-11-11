@@ -28,6 +28,6 @@ public class EditRoleViewModel
    
    [Required(ErrorMessage = "Role Name is required")]
    public string RoleName { get; set; }
-   
-   public List<string> Users { get; set;  }
+
+   public List<string> Users { get; set; } = new();
 }
