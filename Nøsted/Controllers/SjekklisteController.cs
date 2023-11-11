@@ -296,7 +296,7 @@ public async Task<IActionResult> Create(CreateSjekklisteSjekkpunktViewModel view
             await _context.SaveChangesAsync();
 
             // Redirect to a success page, or another appropriate action
-            return RedirectToAction("Details", "Ordre"); // Replace 'Index' with your desired landing page after deletion
+            return RedirectToAction("Index", "Ordre"); // Replace 'Index' with your desired landing page after deletion
         }
 
        
@@ -304,10 +304,10 @@ public async Task<IActionResult> Create(CreateSjekklisteSjekkpunktViewModel view
         // POST: Sjekkliste/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed (int id)
+        public async Task<IActionResult> DeleteConfirmed (Guid id)
         {
             var sjekklisteSjekkpunkter = await _context.SjekklisteSjekkpunkt
-                .Where(sl => sl.OrdreNr == id)
+                .Where(sl => sl.SjekklisteID == id)
                 .ToListAsync();
 
             if (sjekklisteSjekkpunkter == null || !sjekklisteSjekkpunkter.Any())
