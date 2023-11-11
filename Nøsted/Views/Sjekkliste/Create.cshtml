@@ -1,49 +1,39 @@
-@using Microsoft.CodeAnalysis.Elfie.Model.Map
 @model CreateSjekklisteSjekkpunktViewModel
 
-<form  >
-<div class="form-group">
-    <label for="SjekklisteId">Sjekkliste ID:</label>
-    <input asp-for="SjekklisteId" class="form-control" readonly />
-</div>
+@{
+    ViewData["Title"] = "Create Checklist";
+}
 
-    <table class="table table-hover">
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.SjekklisteId)
+
+    <table class="table">
         <thead>
-        <tr>
-            <th scope="col"> </th>
-            <th scope="col">Sjekkpunkter</th>
-            <th scope="col">Ok</th>
-            <th scope="col">Bør Skiftes</th>
-            <th scope="col">Defekt</th>
-
-
-        </tr>
+            <tr>
+                <th>Sjekkpunkt</th>
+                <th>Status</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model.Sjekkpunkter)
-        {
-            <tr>
-                <td>@item.KategoriID</td>
-                <td>@item.SjekkpunktNavn</td>
-                <td>
-                    <input type="radio" name="statusRadio@item.SjekkpunktID" value="Ok" />
-                </td>
+            @for (int i = 0; i < Model.SjekkpunkterWithStatus.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => model.SjekkpunkterWithStatus[i].Sjekkpunkt.SjekkpunktNavn)
+                        @Html.HiddenFor(model => model.SjekkpunkterWithStatus[i].Sjekkpunkt.SjekkpunktID)
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(model => model.SjekkpunkterWithStatus[i].Status, new SelectList(new List<string> { "OK", "Bør skiftes", "Defekt" }), new { @class = "form-control" })
+                    </td>
+                </tr>
+            }
 
-                <td>
-                    <input type="radio" name="statusRadio@item.SjekkpunktID" value="Bør Skiftes" />
-                </td>
-
-                <td>
-                    <input type="radio" name="statusRadio_@item.SjekkpunktID" value="Defekt" />
-                </td>
-
-            </tr>
-        }
         </tbody>
     </table>
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
-    </div>
-    @Html.ValidationSummary()
-    </form>
-﻿
+
+    <button type="submit" class="btn btn-primary">Save Checklist</button>
+</form>

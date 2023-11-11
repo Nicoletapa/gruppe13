@@ -34,116 +34,125 @@ namespace Nøsted.Controllers
         }
 
         // GET: Sjekkliste/Details/5
-        public async Task<IActionResult> Details(int? id)
+       
+        // GET: Sjekkliste/Details/5
+        public async Task<IActionResult> Details(Guid id)
         {
-            if (id == null || _context.Sjekkliste == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var sjekkliste = await _context.Sjekkliste
-                .FirstOrDefaultAsync(m => m.SjekklisteID == id);
-            if (sjekkliste == null)
+            var sjekklisteSjekkpunkter = await _context.SjekklisteSjekkpunkt
+                .Where(sl => sl.SjekklisteID == id)
+                .Include(sl => sl.sjekkpunkt)
+                .ThenInclude(s => s.Kategori)
+                .ToListAsync();
+
+            if (sjekklisteSjekkpunkter == null || !sjekklisteSjekkpunkter.Any())
             {
                 return NotFound();
             }
 
-            return View(sjekkliste);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Create(int orderId)
-        {
-            // Check if the Ordre1 exists
-            var existingOrder = await _context.Ordre1
-                .FirstOrDefaultAsync(o => o.OrdreNr == orderId);
-    
-            if (existingOrder == null)
+            var viewModel = new CreateSjekklisteSjekkpunktViewModel()
             {
-                // Handle the case where the order does not exist.
-                // You could create a new order here, or return an error message, etc.
-                return NotFound("Order with the specified ID does not exist.");
-            }
-    
-            var existingSjekkliste = await _context.Sjekkliste
-                .FirstOrDefaultAsync(s => s.OrdreNr == orderId);
-
-            if (existingSjekkliste == null)
-            {
-                // Create a new Sjekkliste since it does not exist
-                var newSjekkliste = new Sjekkliste
+                SjekklisteId = id,
+                SjekkpunkterWithStatus = sjekklisteSjekkpunkter.Select(sls => new SjekkpunktWithStatus
                 {
-                    OrdreNr = orderId,
-                    
-                    // Initialize other properties as necessary...
-                };
-
-                _context.Sjekkliste.Add(newSjekkliste);
-                await _context.SaveChangesAsync();
-
-                existingSjekkliste = newSjekkliste;
-            }
-
-            var sjekkpunkter = await _context.Sjekkpunkt2.ToListAsync();
-
-            var viewModel = new CreateSjekklisteSjekkpunktViewModel
-            {
-                sjekklisteSjekkpunkt = new SjekklisteSjekkpunkt
-                {
-                    sjekkliste = existingSjekkliste,
-                    sjekkpunkt = new Sjekkpunkt(),
-                    Status = "ok"
-                },
-                Sjekkpunkter = sjekkpunkter,
-                SjekklisteId = existingSjekkliste.SjekklisteID // Set the SjekklisteId in the view model
+                    Sjekkpunkt = sls.sjekkpunkt,
+                    Status = sls.Status
+                }).ToList()
             };
 
             return View(viewModel);
         }
 
+        
+[HttpGet]
+public async Task<IActionResult> Create(int orderId)
+{
+    var existingChecklist = await _context.SjekklisteSjekkpunkt
+        .Where(sl => sl.OrdreNr == orderId)
+        .FirstOrDefaultAsync();
 
-        // POST: api/Sjekkliste/CreateChecklist
-        // POST: api/Sjekkliste/CreateChecklist
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateSjekklisteSjekkpunktViewModel viewModel)
+    if (existingChecklist != null)
+    {
+        return RedirectToAction("Details", new { id = existingChecklist.SjekklisteID });
+    }
+
+    var newSjekklisteId = Guid.NewGuid();
+    var sjekkpunkter = await _context.Sjekkpunkt
+        .Include(sp => sp.Kategori)
+        .ToListAsync();
+    var sjekklisteSjekkpunktList = new List<SjekklisteSjekkpunkt>();
+    
+    foreach (var sjekkpunkt in sjekkpunkter)
+    {
+        sjekklisteSjekkpunktList.Add(new SjekklisteSjekkpunkt
         {
-            if (ModelState.IsValid)
+            SjekklisteID = newSjekklisteId,
+            SjekkpunktID = sjekkpunkt.SjekkpunktID,
+            OrdreNr = orderId,
+            Status = "OK" ,// Default status
+            sjekkpunkt = sjekkpunkt
+        });
+    }
+
+    _context.SjekklisteSjekkpunkt.AddRange(sjekklisteSjekkpunktList);
+    await _context.SaveChangesAsync();
+
+    var viewModel = new CreateSjekklisteSjekkpunktViewModel
+    {
+        SjekklisteId = newSjekklisteId,
+        SjekkpunkterWithStatus = sjekkpunkter.Select(sp => new SjekkpunktWithStatus
+        {
+            Sjekkpunkt = sp,
+            Status = "OK" // default status
+        }).ToList()
+    };
+
+    return View(viewModel);
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Create(CreateSjekklisteSjekkpunktViewModel viewModel)
+{
+    if (ModelState.IsValid)
+    {
+        foreach (var sjekkpunktStatus in viewModel.SjekkpunkterWithStatus)
+        {
+            var existingEntry = _context.SjekklisteSjekkpunkt.FirstOrDefault(
+                s => s.SjekkpunktID == sjekkpunktStatus.Sjekkpunkt.SjekkpunktID
+                     && s.SjekklisteID == viewModel.SjekklisteId);
+
+            if (existingEntry != null)
             {
-                // Get all Sjekkpunkt entries (assuming there are 23, and they are pre-populated in the database)
-                var sjekkpunkter = await _context.Sjekkpunkt2.ToListAsync();
-
-                // Loop through all Sjekkpunkter and create a SjekklisteSjekkpunkt for each
-                foreach (var sjekkpunkt in sjekkpunkter)
-                {
-                    var sjekklisteSjekkpunkt = new SjekklisteSjekkpunkt
-                    {
-                        SjekklisteID = viewModel.SjekklisteId, // Same SjekklisteID for all
-                        SjekkpunktID = sjekkpunkt.SjekkpunktID,
-                        Status = "Ok" // Default status
-                    };
-
-                    _context.SjekklisteSjekkpunkt.Add(sjekklisteSjekkpunkt);
-                }
-
-                await _context.SaveChangesAsync();
-
-                // Redirect to the desired action after successfully creating the entries
-                return RedirectToAction("Index");
+                existingEntry.Status = sjekkpunktStatus.Status;
+                _context.Entry(existingEntry).State = EntityState.Modified; // Mark entity as modified
             }
-
-            // If the ModelState is not valid, return to the Create view with the same viewModel
-            return View(viewModel);
+            else
+            {
+                var sjekklisteSjekkpunkt = new SjekklisteSjekkpunkt
+                {
+                    SjekkpunktID = sjekkpunktStatus.Sjekkpunkt.SjekkpunktID,
+                    Status = sjekkpunktStatus.Status,
+                    SjekklisteID = viewModel.SjekklisteId,
+                    OrdreNr = viewModel.OrdreNr
+                };
+                _context.SjekklisteSjekkpunkt.Add(sjekklisteSjekkpunkt);
+            }
         }
-        
-        
+
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Details", new { id = viewModel.SjekklisteId });
+    }
+
+    return View(viewModel);
+}
 
 
-        
-        
 
-
-        
         /*
         [HttpGet] 
         public async Task<IActionResult> Create()
@@ -224,9 +233,9 @@ namespace Nøsted.Controllers
         // POST: Sjekkliste/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        /*[HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SjekklisteID")] Sjekkliste sjekkliste)
+        public async Task<IActionResult> Edit(Guid id, [Bind("SjekklisteSjekkpunktID")] SjekklisteSjekkpunkt sjekkliste)
         {
             if (id != sjekkliste.SjekklisteID)
             {
@@ -254,48 +263,67 @@ namespace Nøsted.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(sjekkliste);
-        }
+        }*/
 
         // GET: Sjekkliste/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
         {
-            if (id == null || _context.Sjekkliste == null)
-            {
-                return NotFound();
-            }
+            var sjekkliste = await _context.SjekklisteSjekkpunkt
+                .FirstOrDefaultAsync(sl => sl.SjekklisteID == id);
 
-            var sjekkliste = await _context.Sjekkliste
-                .FirstOrDefaultAsync(m => m.SjekklisteID == id);
             if (sjekkliste == null)
             {
-                return NotFound();
+                return NotFound(); // Sjekkliste not found
             }
 
-            return View(sjekkliste);
+            int orderId = sjekkliste.OrdreNr; // Assuming OrdreNr is a property of SjekklisteSjekkpunkt
+
+            // Find all SjekklisteSjekkpunkt entries related to the orderId
+            var sjekklisteSjekkpunkter = await _context.SjekklisteSjekkpunkt
+                .Where(sl => sl.OrdreNr == orderId)
+                .ToListAsync();
+
+            if (sjekklisteSjekkpunkter == null || !sjekklisteSjekkpunkter.Any())
+            {
+                return NotFound(); // No SjekklisteSjekkpunkt found for the given orderId
+            }
+
+            // Remove the found entries from the database context
+            _context.SjekklisteSjekkpunkt.RemoveRange(sjekklisteSjekkpunkter);
+
+            // Save changes to the database
+            await _context.SaveChangesAsync();
+
+            // Redirect to a success page, or another appropriate action
+            return RedirectToAction("Details", "Ordre"); // Replace 'Index' with your desired landing page after deletion
         }
+
+       
 
         // POST: Sjekkliste/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed (int id)
         {
-            if (_context.Sjekkliste == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Sjekkliste'  is null.");
-            }
-            var sjekkliste = await _context.Sjekkliste.FindAsync(id);
-            if (sjekkliste != null)
-            {
-                _context.Sjekkliste.Remove(sjekkliste);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            var sjekklisteSjekkpunkter = await _context.SjekklisteSjekkpunkt
+                .Where(sl => sl.OrdreNr == id)
+                .ToListAsync();
 
-        private bool SjekklisteExists(int id)
-        {
-          return (_context.Sjekkliste?.Any(e => e.SjekklisteID == id)).GetValueOrDefault();
+            if (sjekklisteSjekkpunkter == null || !sjekklisteSjekkpunkter.Any())
+            {
+                return NotFound(); // Handle the case where no checklist is found
+            }
+
+            _context.SjekklisteSjekkpunkt.RemoveRange(sjekklisteSjekkpunkter);
+            await _context.SaveChangesAsync();
+
+            // Redirect to a success page or another appropriate action
+            return RedirectToAction("Details", "Ordre"); // Replace 'Index' with your desired landing page
         }
+        // private bool SjekklisteExists(int id)
+        // {
+        //     return (_context.SjekklisteSjekkpunkt?.Any(e => e.SjekklisteID == id)).GetValueOrDefault();
+        // }
     }
 }

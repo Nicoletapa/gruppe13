@@ -9,23 +9,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 namespace Nøsted.Models;
 
 
-[Table("Sjekkliste")]
-public class Sjekkliste
-                {
-                    [Key]
-                    public int SjekklisteID { get; set; }
-                    
-                    [ForeignKey("OrdreNr")]
-                    public int OrdreNr { get; set; }
-                    
-                    [ValidateNever] // Specify the column name in the database
-                    public OrdreViewModel Ordre { get; set; }
-                   
-                   
-                    public IEnumerable<SjekklisteSjekkpunkt>? Sjekkpunkter { get; set; } // Make sure this property is correctly defined
-                   
-                    
-                }
+
 [Table("Kategori")]              
 public class Kategori
                 {
@@ -34,21 +18,22 @@ public class Kategori
                     public string KategoriNavn { get; set; }
                 }
 
-[Table("Sjekkpunkt2")]
+[Table("Sjekkpunkt")]
 public class Sjekkpunkt 
 {
                     [Key] 
                     public int SjekkpunktID { get; set; }
+                    
+                    [ValidateNever]
                     public string SjekkpunktNavn { get; set; }
                     
                     [ForeignKey("KategoriID")]
                     public int KategoriID { get; set; } // Foreign key
 
-                     public Kategori? Kategori { get; set; }
-                     // public IEnumerator GetEnumerator()
-                     // {
-                     //     throw new NotImplementedException();
-                     // }
+                   public Kategori? Kategori { get; set; }
+                  //  public virtual Kategori Kategori { get; set; } // Navigation property
+
+                    
 }
 
 
@@ -57,35 +42,58 @@ public class Sjekkpunkt
     public class SjekklisteSjekkpunkt
     {
         [Key] 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SjekklisteSjekkpunktID { get; set; }
-
-        [ForeignKey("SjekklisteID")] 
-        public int SjekklisteID { get; set; }
+        
+        public Guid SjekklisteID { get; set; }
         
         [ForeignKey("SjekkpunktID")] 
         public int SjekkpunktID { get; set; }
         
+        [ForeignKey("OrdreNr")] 
+        public int OrdreNr { get; set; }
+       
         public string Status { get; set; }
-        public Sjekkliste sjekkliste { get; set; } // Navigation property for the related Sjekkliste entity
+       
         public Sjekkpunkt sjekkpunkt { get; set; } // Navigation for Sjekkpunkt 
+        
 
       
     }
 
+// public class SjekkpunktGroup
+// {
+//     [ValidateNever]
+//     public string KategoriNavn { get; set; }
+//     [ValidateNever]
+//     public int Rowspan { get; set; }
+//     [ValidateNever]
+//     public List<SjekkpunktWithStatus> Sjekkpunkter { get; set; } // Changed to include status
+//
+// }
+
+public class SjekkpunktWithStatus
+{
+    public Sjekkpunkt Sjekkpunkt { get; set; }
+    public string Status { get; set; }
+}
 
 
 public class CreateSjekklisteSjekkpunktViewModel
 {
 
-    // public List<Sjekkliste> sjekkliste { get; set; } //SjeklisteID
-    // public List<SjekklisteSjekkpunkt> sjekklisteSjekkpunkt { get; set; } //STAtus
-    // public List<Sjekkpunkt> sjekkpunkt { get; set; } //sjekkpunktID / KATEGORIID / SJEKPUNKTNAVN
-    // public List<Kategori> kategorier { get; set; }
+   
+    [ValidateNever]
+    public List<Sjekkpunkt> Sjekkpunkter { get; set; } = new();
 
-    public Sjekkliste sjekkliste { get; set; }
-    public IEnumerable<Sjekkpunkt> Sjekkpunkter { get; set; }
+    // public List<SjekkpunktGroup> GroupedSjekkpunkter { get; set; } = new();
+
+    [ValidateNever]
     public SjekklisteSjekkpunkt sjekklisteSjekkpunkt { get; set; } 
+    [ValidateNever]
     public Kategori kategori { get; set; }
-    public int SjekklisteId { get; set; }
+    public Guid SjekklisteId { get; set; }
+    public List<SjekkpunktWithStatus> SjekkpunkterWithStatus { get; set; } = new List<SjekkpunktWithStatus>();
 
+    public int OrdreNr { get; set; }
 }

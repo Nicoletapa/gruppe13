@@ -24,6 +24,6 @@ public class OrdreViewModel
     public decimal AntallTimer { get; set; }
     public bool status { get; set; }
 
-    private Sjekkliste sjekkliste { get; set; }
+    private SjekklisteSjekkpunkt sjekklisteSjekkpunkt  { get; set; }
     
 }

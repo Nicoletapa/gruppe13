@@ -16,38 +16,28 @@ namespace Nøsted.Data;
 
         public DbSet<OrdreViewModel> Ordre1 { get; set; } = default!;
 
-        public DbSet<Sjekkliste> Sjekkliste { get; set; }
+       
         public DbSet<Kategori> Kategori { get; set; }
-        public DbSet<Sjekkpunkt> Sjekkpunkt2 { get; set; }
+        public DbSet<Sjekkpunkt> Sjekkpunkt { get; set; }
         public DbSet<SjekklisteSjekkpunkt> SjekklisteSjekkpunkt { get; set; }
         public DbSet<Bruker> bruker { get; set; } = default!;
     
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SjekklisteSjekkpunkt>()
-                .HasKey(ss => ss.SjekklisteSjekkpunktID);
-
-            modelBuilder.Entity<SjekklisteSjekkpunkt>()
-                .HasOne(j => j.sjekkliste)
-                .WithMany(s => s.Sjekkpunkter)
-                .HasForeignKey(j => j.SjekklisteID);
-
-
-            modelBuilder.Entity<SjekklisteSjekkpunkt>()
-                .HasOne(s => s.sjekkpunkt)
+            modelBuilder.Entity<Sjekkpunkt>()
+                .HasOne(s => s.Kategori)
                 .WithMany()
-                .HasForeignKey(s => s.SjekkpunktID);
+                .HasForeignKey(s => s.KategoriID);
 
-            modelBuilder.Entity<Sjekkliste>()
-                .HasMany(s => s.Sjekkpunkter)
-                .WithOne(p => p.sjekkliste);
+            modelBuilder.Entity<SjekklisteSjekkpunkt>()
+                .HasOne(ss => ss.sjekkpunkt)
+                .WithMany()
+                .HasForeignKey(ss => ss.SjekkpunktID);
+
+            
                 
-            modelBuilder.Entity<Sjekkliste>()
-                .HasOne(s => s.Ordre)
-                .WithMany()
-                .HasForeignKey(s => s.OrdreNr);
-
+          
             
                 
                 

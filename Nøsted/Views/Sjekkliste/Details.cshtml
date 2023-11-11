@@ -1,20 +1,25 @@
-@model Nøsted.Models.Sjekkliste
+@model CreateSjekklisteSjekkpunktViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Checklist Details";
 }
 
-<h1>Details</h1>
+<h2>@ViewData["Title"]</h2>
 
-<div>
-    <h4>Sjekkliste</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-        
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.SjekklisteID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Sjekkpunkt</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var sjekkpunkt in Model.SjekkpunkterWithStatus)
+    {
+        <tr>
+            <td>@sjekkpunkt.Sjekkpunkt.SjekkpunktNavn</td>
+            <td>@sjekkpunkt.Status</td>
+        </tr>
+    }
+    </tbody>
+</table>
