@@ -1,51 +1,38 @@
-@model Nøsted.Models.SjekklisteSjekkpunkt
+@model CreateSjekklisteSjekkpunktViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Checklist";
 }
 
-<h1>Edit</h1>
+<h2>@ViewData["Title"]</h2>
 
-<h4>Sjekkliste</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="SjekklisteID" />
-            @*<div class="form-group">
-                <label asp-for="Kommentar" class="control-label"></label>
-                <input asp-for="Kommentar" class="form-control" />
-                <span asp-validation-for="Kommentar" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Xx_bar" class="control-label"></label>
-                <input asp-for="Xx_bar" class="form-control" />
-                <span asp-validation-for="Xx_bar" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TestVinsjOgKjørAlleFunksjoner" class="control-label"></label>
-                <input asp-for="TestVinsjOgKjørAlleFunksjoner" class="form-control" />
-                <span asp-validation-for="TestVinsjOgKjørAlleFunksjoner" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TrekkKraftKN" class="control-label"></label>
-                <input asp-for="TrekkKraftKN" class="form-control" />
-                <span asp-validation-for="TrekkKraftKN" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BremseKraftKN" class="control-label"></label>
-                <input asp-for="BremseKraftKN" class="form-control" />
-                <span asp-validation-for="BremseKraftKN" class="text-danger"></span>
-            </div>*@
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    @Html.HiddenFor(model => model.SjekklisteId)
 
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sjekkpunkt</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.SjekkpunkterWithStatus.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => model.SjekkpunkterWithStatus[i].Sjekkpunkt.SjekkpunktNavn)
+                        @Html.HiddenFor(model => model.SjekkpunkterWithStatus[i].Sjekkpunkt.SjekkpunktID)
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(model => model.SjekkpunkterWithStatus[i].Status, new SelectList(new List<string> { "OK", "Bør skiftes", "Defekt" }, Model.SjekkpunkterWithStatus[i].Status), new { @class = "form-control" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Update Checklist</button>
+</form>

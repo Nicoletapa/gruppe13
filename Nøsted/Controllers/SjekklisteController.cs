@@ -152,83 +152,60 @@ public async Task<IActionResult> Create(CreateSjekklisteSjekkpunktViewModel view
 }
 
 
+        [HttpGet]
+                public async Task<IActionResult> Edit(Guid sjekklisteId)
+                {
+                    var sjekkliste = await _context.SjekklisteSjekkpunkt
+                        .Include(s => s.sjekkpunkt)
+                        .Where(s => s.SjekklisteID == sjekklisteId)
+                        .ToListAsync();
 
-        /*
-        [HttpGet] 
-        public async Task<IActionResult> Create()
-        {
+                    if (sjekkliste == null)
+                    {
+                        return NotFound();
+                    }
 
-        var viewModel = new CreateSjekklisteSjekkpunktViewModel
-        {
-            sjekklisteSjekkpunkt = new SjekklisteSjekkpunkt()
-            {
-                sjekkliste = new Sjekkliste(),
-                sjekkpunkt = new Sjekkpunkt(),
-                    
-                    
-            },
-            
-        };
-        _context.SjekklisteSjekkpunkt.ToListAsync();
-        _context.SaveChangesAsync();
-            
-        return View(viewModel);
-    }
-        
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CreateSjekklisteSjekkpunktViewModel viewModel)
+                    var viewModel = new CreateSjekklisteSjekkpunktViewModel
+                    {
+                        SjekklisteId = sjekklisteId,
+                        SjekkpunkterWithStatus = sjekkliste.Select(s => new SjekkpunktWithStatus
+                        {
+                            Sjekkpunkt = s.sjekkpunkt,
+                            Status = s.Status
+                        }).ToList()
+                    };
+
+                    return View(viewModel);
+                }
+
+
+       
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Edit(CreateSjekklisteSjekkpunktViewModel viewModel)
+{
+    if (ModelState.IsValid)
     {
-        if (ModelState.IsValid)
+        foreach (var sjekkpunktStatus in viewModel.SjekkpunkterWithStatus)
         {
-            // Assuming SjekklisteSjekkpunkt has a Status property that you want to set
-            viewModel.sjekklisteSjekkpunkt.Status = viewModel.sjekklisteSjekkpunkt.Status; // Set the default status here or get it from the form
+            var sjekklisteSjekkpunkt = await _context.SjekklisteSjekkpunkt
+                .FirstOrDefaultAsync(s => s.SjekkpunktID == sjekkpunktStatus.Sjekkpunkt.SjekkpunktID
+                                          && s.SjekklisteID == viewModel.SjekklisteId);
 
-            // Add the new SjekklisteSjekkpunkt to the context and save changes
-            _context.SjekklisteSjekkpunkt.Add(viewModel.sjekklisteSjekkpunkt);
-            await _context.SaveChangesAsync();
-
-            // Redirect to the desired action after successfully creating the SjekklisteSjekkpunkt
-            return RedirectToAction("Index");
+            if (sjekklisteSjekkpunkt != null)
+            {
+                sjekklisteSjekkpunkt.Status = sjekkpunktStatus.Status;
+            }
         }
 
-        // If the ModelState is not valid, return to the Create view with the same viewModel
-        return View(viewModel);
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Details", new { id = viewModel.SjekklisteId });
     }
-    */
 
+    // If model state is not valid, return the view with current model to show validation errors
+    return View(viewModel);
+}
 
-
-        /*[HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int SjekklisteID, int SjekkpunktID, string status)
-        {
-            // Find the corresponding checklist and checkpoint
-            var sjekkliste = await _context.Sjekkliste.FindAsync(SjekklisteID);
-            var sjekkpunkt = await _context.Sjekkpunkt2.FindAsync(SjekkpunktID);
-
-            if (sjekkliste == null || sjekkpunkt == null)
-            {
-                ModelState.AddModelError(string.Empty, "Invalid Sjekkliste or Sjekkpunkt selection.");
-                return NotFound(); // Handle not found cases
-            }
-
-                // Create a new SjekklisteSjekkpunkt with the provided status
-                var sjekklisteSjekkpunkt = new SjekklisteSjekkpunkt
-                {
-                    Sjekkliste = sjekkliste,
-                    sjekkpunkter = sjekkpunkt,
-                    Status = status
-                };
-
-                _context.SjekklisteSjekkpunkt.Add(sjekklisteSjekkpunkt);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("Index"); // Redirect to the appropriate view
-            }
-            */
-
-     
 
         // POST: Sjekkliste/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
