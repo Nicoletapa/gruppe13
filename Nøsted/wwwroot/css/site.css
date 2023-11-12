@@ -20,3 +20,157 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.radio {
+  transform: scale(1.5); /* the size of radio buttons */
+  margin: 5px;/*margin around the buttons */
+  vertical-align: middle;
+}
+.container-s{
+  background:  rgb(0,0,0);
+  color: #9cb7c2;
+  font-weight: bolder;
+}
+.container-svart {
+  background-color: rgb(16, 24, 32);
+ 
+}
+.oransj {
+ background-color: rgb(231, 121, 44);
+}
+
+.text-color {
+  color: #9cb7c2;
+  
+  /*background-color: rgb(217, 229, 235);*/
+}
+
+/* Change the background color of the navbar */
+.navbar {
+  background-color: black !important;
+}
+
+/* Change the text color of navigation links */
+.navbar .nav-link {
+  color: #9cb7c2 !important;
+}
+
+/* Change the text color of the navbar brand */
+.navbar-brand {
+  color: #9cb7c2 !important;
+}
+
+footer1 {
+  position: relative;
+  display: flex;
+  background-color: rgb(16, 24, 32);
+  padding-top: 5rem;
+  padding-right: 0px;
+  border-bottom-width: 2rem;
+  border-bottom-style: solid;
+  border-bottom-color: rgb(231, 121, 44);
+}
+.logo-icon {
+  width: 30rem;
+  display: block/* Keeps the aspect ratio */
+
+}
+.logo_mobile{
+  display: none;
+}
+
+ p, div {
+  line-height: 3;
+}
+
+div {
+  margin-top: 0px;
+  padding-top: 0px;
+  border-top-width: 0px;
+  border-right-width: 0px;
+  border-bottom-width: 0px;
+  border-left-width: 0px;
+  font-style: inherit;
+  font-variant-caps: inherit;
+  font-weight: inherit;
+  font-stretch: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  font-size-adjust: inherit;
+  font-kerning: inherit;
+  font-variant-alternates: inherit;
+  font-variant-ligatures: inherit;
+  font-variant-numeric: inherit;
+  font-variant-east-asian: inherit;
+  font-variant-position: inherit;
+  font-feature-settings: inherit;
+  font-optical-sizing: inherit;
+  font-variation-settings: inherit;
+  vertical-align: baseline;
+ 
+}
+*, ::before, ::after {
+  box-sizing: border-box;
+}
+address, article, aside, div, footer, header, hgroup, main, nav, search, section {
+  display: block;
+}
+*, ::before, ::after {
+  box-sizing: border-box;
+}
+a:any-link {
+  color: -webkit-link;
+  cursor: auto;
+}
+body {
+  text-rendering: optimizespeed;
+}
+.logo_tablet {
+  width: 150px; /* Set the desired width */
+  height: auto;
+  margin-left: 20px/* This will maintain the aspect ratio */
+}
+.text-font {
+  font-family: Georgia, Serif;
+}
+.container-new {
+  background-color: #9CB7C2; /* This will be the container background color */
+  border: 5px solid #ddd; /* Adds a border to the container */
+  padding: 20px; /* Adds space inside the container */
+  margin-bottom: 20px; /* Adds space below the container */
+  border-radius: 5px; /* Optional: Rounds the corners of the container */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 200px/* Optional: Adds a subtle shadow to the container */
+}
+nav {
+  background: linear-gradient(to bottom, rgb(0,0,0) 0%, rgb(0,0,0) 30%,rgb(16, 24, 32) 100%);
+  border: none; /* Remove any existing border */
+}
+.container2 {
+  text-align: center; /* Centers the text horizontally */
+  display: flex; /* Enables flexbox */
+  align-items: center; /* Centers the content vertically */
+  justify-content: center; /* Centers the content horizontally */
+  height: 150px; /* Set a height for the container */
+  font-size: 3em; /* Makes the text larger */
+  font-family: Georgia, Serif;
+  
+}
+.text-dark {
+  text-decoration: none; /* Removes the underline from the link */
+  color: #fff; /* Sets the link color to white */
+  display: inline-block; /* Allows width and height to be set */
+  padding: 10px 20px;
+}
+.container-new:hover {
+  background-color: rgb(231, 121, 44); /* Color when hovered */
+}
+
+
+.container-pressed {
+  background-color: rgb(211, 101, 24); /* Slightly darker shade for a pressed effect */
+  color: #fff; /* Optional: change text color */
+  /* More pronounced styling for a pressed button effect */
+  transform: scale(0.98);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2);
+}

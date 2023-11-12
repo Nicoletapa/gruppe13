@@ -2,10 +2,56 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Verktøy</h1>
-</div>
+<html>
 
-<div class="container" >
-    
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.container-new').forEach(function(container) {
+      container.addEventListener('mousedown', function() {
+        // Apply the 'container-pressed' class when the mouse button is down
+        container.classList.add('container-pressed');
+      });
+      container.addEventListener('mouseup', function() {
+        // Remove the 'container-pressed' class when the mouse button is released
+        container.classList.remove('container-pressed');
+      });
+      container.addEventListener('mouseleave', function() {
+        // Also remove the 'container-pressed' class when the mouse leaves the container
+        container.classList.remove('container-pressed');
+      });
+    });
+  });
+</script>
+
+
+<body class="container-svart ">
+
+
+    <div class="text-center mt-4">
+        <h1 class="display-4 text-color text-font">Verktøy</h1>
+        <div class="row justify-content-center mt-4">
+            <div class="col-sm-6 col-md-4 m-lg-3 container-new">
+                <div >
+                    <a class="text-dark container2" asp-area="" asp-controller="Ordre" asp-action="Index">Ordre</a>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4 m-lg-3 container-new ">
+                <div class="container2">
+                    <a class="text-dark" asp-area="" asp-action="Index">Lager</a>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4 m-lg-3 container-new">
+                <div class="container2">
+                    <a class="text-dark" asp-area=""  asp-action="Index">Rapporter</a>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4 m-lg-3 container-new">
+                <div class="container2">
+                    <a class="text-dark" asp-area="" asp-controller="Bruker" asp-action="ListUsers">Ansatte</a>
+                </div>
+            </div>
+        </div>
+ 
 </div>
+</body>

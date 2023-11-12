@@ -11,36 +11,36 @@
 
     @Html.HiddenFor(model => model.SjekklisteId)
 
-     <table class="table">
-            <thead>
-                <tr>
-                    <th>Sjekkpunkt</th>
-                    <th>OK</th>
-                    <th>Bør skiftes</th>
-                    <th>Defekt</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (int i = 0; i < Model.SjekkpunkterWithStatus.Count; i++)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(model => model.SjekkpunkterWithStatus[i].Sjekkpunkt.SjekkpunktNavn)
-                            @Html.HiddenFor(model => model.SjekkpunkterWithStatus[i].Sjekkpunkt.SjekkpunktID)
-                        </td>
-                        <td class="align-middle text-center">
-                            @Html.RadioButtonFor(model => model.SjekkpunkterWithStatus[i].Status, "OK", new { id = "status_ok_" + i })
-                        </td>
-                        <td class="align-middle text-center">
-                            @Html.RadioButtonFor(model => model.SjekkpunkterWithStatus[i].Status, "Bør skiftes", new { id = "status_borskiftes_" + i })
-                        </td>
-                        <td class="align-middle text-center">
-                            @Html.RadioButtonFor(model => model.SjekkpunkterWithStatus[i].Status, "Defekt", new { id = "status_defekt_" + i })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-<div asp-validation-summary="All"></div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Sjekkpunkt</th>
+            <th>OK</th>
+            <th>Bør skiftes</th>
+            <th>Defekt</th>
+        </tr>
+        </thead>
+        <tbody>
+        @for (int i = 0; i < Model.SjekkpunkterWithStatus.Count; i++)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => model.SjekkpunkterWithStatus[i].Sjekkpunkt.SjekkpunktNavn)
+                    @Html.HiddenFor(model => model.SjekkpunkterWithStatus[i].Sjekkpunkt.SjekkpunktID)
+                </td>
+                <td class="align-middle text-center">
+                    <p class="radio">@Html.RadioButtonFor(model => model.SjekkpunkterWithStatus[i].Status, "OK", new { id = "status_ok_" + i })</p>
+                </td>
+                <td class="align-middle text-center">
+                  <p class="radio">  @Html.RadioButtonFor(model => model.SjekkpunkterWithStatus[i].Status, "Bør skiftes", new { id = "status_borskiftes_" + i })</p>
+                </td>
+                <td class="align-middle text-center">
+                  <p class="radio">  @Html.RadioButtonFor(model => model.SjekkpunkterWithStatus[i].Status, "Defekt", new { id = "status_defekt_" + i })</p>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <div asp-validation-summary="All"></div>
     <button type="submit" class="btn btn-primary">Save Checklist</button>
 </form>
