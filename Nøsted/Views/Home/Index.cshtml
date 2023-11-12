@@ -6,24 +6,15 @@
 
 
 <script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.container-new').forEach(function(container) {
-      container.addEventListener('mousedown', function() {
-        // Apply the 'container-pressed' class when the mouse button is down
-        container.classList.add('container-pressed');
-      });
-      container.addEventListener('mouseup', function() {
-        // Remove the 'container-pressed' class when the mouse button is released
-        container.classList.remove('container-pressed');
-      });
-      container.addEventListener('mouseleave', function() {
-        // Also remove the 'container-pressed' class when the mouse leaves the container
-        container.classList.remove('container-pressed');
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.container-new').forEach(container => {
+      container.addEventListener('click', function() {
+        console.log('Container pressed'); // Debugging line
+        container.classList.toggle('container-pressed');
       });
     });
   });
 </script>
-
 
 <body class="container-svart ">
 

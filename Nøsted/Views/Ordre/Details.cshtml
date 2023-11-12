@@ -4,13 +4,13 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Detaljer</h1>
-
-<div>
+<h1 class="text-center mt-4 mb-4">Detaljer</h1>
+<body class="justify-content-center">
+<div class="text-center">
 
     <hr />
-    <table class="table">
-        <tr>
+    <table class="table  table-hover table-bordered">
+        <tr class="table-active">
             <th>Property</th>
             <th>Value</th>
         </tr>
@@ -76,7 +76,7 @@
         </tr>
         <tr>
             <td>Status</td>
-            <td>@Html.DisplayFor(model => model.status)</td>
+            <td>@Html.DisplayFor(model => model.Status)</td>
         </tr>
     </table>
 </div>
@@ -85,3 +85,4 @@
     <a asp-action="Index">Back to List</a>
     <a asp-action="Create" asp-controller="Sjekkliste" asp-route-orderId="@Model.OrdreNr">Sjekkliste</a>
 </div>
+</body>

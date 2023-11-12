@@ -51,8 +51,9 @@ namespace Nøsted.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrdreNr,Navn,TelefonNr,Adresse,Type,Gjelder,Epost,Uke,Registrert,Bestilling,AvtaltLevering,ProduktMotatt,AvtaltFerdigstillelse,ServiceFerdig,AntallTimer,status")] OrdreViewModel ordreViewModel)
+        public async Task<IActionResult> Create([Bind("OrdreNr,Navn,TelefonNr,Adresse,Type,Gjelder,Epost,Uke,Registrert,Bestilling,AvtaltLevering,ProduktMotatt,AvtaltFerdigstillelse,ServiceFerdig,AntallTimer,Status")] OrdreViewModel ordreViewModel)
         {
+            ModelState.Remove("OrdreNr");
             if (ModelState.IsValid)
                {
                     _context.Add(ordreViewModel);

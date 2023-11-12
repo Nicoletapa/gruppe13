@@ -1,24 +1,25 @@
 @model IEnumerable<Nøsted.Models.OrdreViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Ordre oversikt";
 }
-
-<h1>Index</h1>
-
+<html>
+<h1 class="text-font">Ordre oversikt</h1>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn knapp" asp-action="Create">Opprett ny ordre</a>
 </p>
+<body class="text-center text-font "> 
+
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.OrdreNr)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Navn)
-            </th>
-            @*<th>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.OrdreNr)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Navn)
+        </th>
+        @*<th>
                 @Html.DisplayNameFor(model => model.TelefonNr)
             </th>
             <th>
@@ -33,10 +34,10 @@
             <th>
                 @Html.DisplayNameFor(model => model.Epost)
             </th>*@
-            <th>
-                @Html.DisplayNameFor(model => model.Uke)
-            </th>
-            @*<th>
+        <th>
+            @Html.DisplayNameFor(model => model.Uke)
+        </th>
+        @*<th>
                 @Html.DisplayNameFor(model => model.Registrert)
             </th>
             <th>
@@ -57,14 +58,14 @@
             <th>
                 @Html.DisplayNameFor(model => model.AntallTimer)
             </th>*@
-            <th>
-                @Html.DisplayNameFor(model => model.status)
-            </th>
-            <th></th>
-        </tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.OrdreNr)
@@ -112,14 +113,16 @@
                 @Html.DisplayFor(modelItem => item.AntallTimer)
             </td>*@
             <td>
-                @Html.DisplayFor(modelItem => item.status)
+                @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.OrdreNr">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.OrdreNr">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.OrdreNr">Delete</a>
+                <a asp-action="Edit" class="knapp btn " asp-route-id="@item.OrdreNr">Edit</a> |
+                <a asp-action="Details" class=" knapp-details btn " asp-route-id="@item.OrdreNr">Details</a> |
+                <a asp-action="Delete" class="knapp-delete btn " asp-route-id="@item.OrdreNr">Delete</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
+</body>
+</html>

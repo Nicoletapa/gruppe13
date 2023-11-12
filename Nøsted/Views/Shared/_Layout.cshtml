@@ -10,12 +10,14 @@
     <link rel="stylesheet" href="~/Nøsted.styles.css" asp-append-version="true"/>
 </head>
 <body >
+
+
 <header >
-    <nav class=" navbar navbar-expand-sm navbar-toggleable-sm mb-3">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm mb-3">
         <div class="container-fluid ">
-            
+
             <div class="vr9lc7-0 kuAUaQ">
-                
+
                 <a class="navbar-brand " asp-area="" asp-controller="Home" asp-action="Index">
                     <svg viewBox="0 0 951 185" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="logo_tablet">
                         <mask id="a__qPvshpJ0" fill="#9CB7C2">
@@ -30,8 +32,8 @@
                     </svg>
                 </a>
             </div>
-               
-            
+
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -41,17 +43,17 @@
                     <li class="nav-item ">
                         <a class="nav-link  " asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
-                    <li class="nav-item " >
+                    <li class="nav-item ">
                         <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
-                    <li class="nav-item " >
+                    <li class="nav-item ">
                         <a class="nav-link " asp-area="" asp-controller="Bruker" asp-action="ListRoles">Roller</a>
                     </li>
-                    
-                    
+
+
                     @*@if (SignInManager<IdentityUser>.IsSignedIn(User) && User.IsInRole("Admin"))*@
-                    
-                        @*
+
+                    @*
                         <li class="nav-item dropdown ">
                             <a  class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >Manage Roles
@@ -64,9 +66,9 @@
                                    asp-action="ListRoles">Roles</a>
                             </div>
                         </li>*@
-                    
-                    
-                    </ul>
+
+
+                </ul>
                 <partial name="_LoginPartial"/>
             </div>
         </div>
