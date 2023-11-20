@@ -1,46 +1,61 @@
 @model CreateSjekklisteSjekkpunktViewModel
 
 @{
-    ViewData["Title"] = "Create Checklist";
+    ViewBag.Title = "Create Checklist";
 }
-
-<h2>@ViewData["Title"]</h2>
+<body class="text-font">
+<h2>Create Checklist</h2>
 
 <form asp-action="Create" method="post">
-    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="SjekklisteId" />
+    <input type="hidden" asp-for="OrdreNr" />
 
-    @Html.HiddenFor(model => model.SjekklisteId)
-
-    <table class="table">
+    <table class="table table-hover">
         <thead>
-        <tr>
-            <th>Sjekkpunkt</th>
-            <th>OK</th>
-            <th>Bør skiftes</th>
-            <th>Defekt</th>
-        </tr>
+            <tr>
+                <th>Kategori</th>
+                <th>Sjekkpunkter</th>
+                <th>OK</th>
+                <th>Bør skiftes</th>
+                <th>Defekt</th>
+            </tr>
         </thead>
         <tbody>
-        @for (int i = 0; i < Model.SjekkpunkterWithStatus.Count; i++)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(model => model.SjekkpunkterWithStatus[i].Sjekkpunkt.SjekkpunktNavn)
-                    @Html.HiddenFor(model => model.SjekkpunkterWithStatus[i].Sjekkpunkt.SjekkpunktID)
-                </td>
-                <td class="align-middle text-center">
-                    <p class="radio">@Html.RadioButtonFor(model => model.SjekkpunkterWithStatus[i].Status, "OK", new { id = "status_ok_" + i })</p>
-                </td>
-                <td class="align-middle text-center">
-                  <p class="radio">  @Html.RadioButtonFor(model => model.SjekkpunkterWithStatus[i].Status, "Bør skiftes", new { id = "status_borskiftes_" + i })</p>
-                </td>
-                <td class="align-middle text-center">
-                  <p class="radio">  @Html.RadioButtonFor(model => model.SjekkpunkterWithStatus[i].Status, "Defekt", new { id = "status_defekt_" + i })</p>
-                </td>
-            </tr>
-        }
+            @for (int groupIndex = 0; groupIndex < Model.GroupedSjekkpunkter.Count; groupIndex++)
+            {
+                var group = Model.GroupedSjekkpunkter[groupIndex];
+                for (int sjekkpunktIndex = 0; sjekkpunktIndex < group.Sjekkpunkter.Count; sjekkpunktIndex++)
+                {
+                    var sjekkpunkt = group.Sjekkpunkter[sjekkpunktIndex];
+                    bool isLastFive = groupIndex > 2 ;  // Check if it's one of the last five checkpoints
+                    <tr>
+                        @if (sjekkpunktIndex == 0)
+                        {
+                            <td rowspan="@group.Sjekkpunkter.Count">@group.KategoriNavn</td>
+                        }
+                        <td>@sjekkpunkt.Sjekkpunkt.SjekkpunktNavn</td>
+                         @if (!isLastFive)
+                                                {
+                                                    <td><input type="radio" name="GroupedSjekkpunkter[@groupIndex].Sjekkpunkter[@sjekkpunktIndex].Status" value="OK" /></td>
+                                                    <td><input type="radio" name="GroupedSjekkpunkter[@groupIndex].Sjekkpunkter[@sjekkpunktIndex].Status" value="Bør skiftes" /></td>
+                                                    <td><input type="radio" name="GroupedSjekkpunkter[@groupIndex].Sjekkpunkter[@sjekkpunktIndex].Status" value="Defekt" /></td>
+                                                    <td><input type="hidden" name="GroupedSjekkpunkter[@groupIndex].Sjekkpunkter[@sjekkpunktIndex].Status" value="null"/></td>
+                                                }
+                                                else
+                                                {
+                                                    <td colspan="3">
+                                                        <input type="text" class="form-control" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" />
+                                                    </td>
+                                                }
+                        <input type="hidden" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Sjekkpunkt.SjekkpunktID" />
+                    </tr>
+                }
+            }
         </tbody>
     </table>
-    <div asp-validation-summary="All"></div>
-    <button type="submit" class="btn btn-primary">Save Checklist</button>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save Checklist</button>
+    </div>
 </form>
+</body>

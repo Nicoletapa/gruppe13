@@ -1,38 +1,60 @@
 @model CreateSjekklisteSjekkpunktViewModel
 
 @{
-    ViewData["Title"] = "Edit Checklist";
+    ViewBag.Title = "Edit Checklist";
 }
-
-<h2>@ViewData["Title"]</h2>
+<body class="text-font">
+<h2>Edit Checklist</h2>
 
 <form asp-action="Edit" method="post">
-    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="SjekklisteId" />
 
-    @Html.HiddenFor(model => model.SjekklisteId)
-
-    <table class="table">
+    <table class="table table-hover">
         <thead>
-            <tr>
-                <th>Sjekkpunkt</th>
-                <th>Status</th>
-            </tr>
+        <tr>
+            <th>Category</th>
+            <th>Checkpoint</th>
+            <th>OK</th>
+            <th>Bør skiftes</th>
+            <th>Defekt</th>
+        </tr>
         </thead>
-        <tbody>
-            @for (int i = 0; i < Model.SjekkpunkterWithStatus.Count; i++)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(model => model.SjekkpunkterWithStatus[i].Sjekkpunkt.SjekkpunktNavn)
-                        @Html.HiddenFor(model => model.SjekkpunkterWithStatus[i].Sjekkpunkt.SjekkpunktID)
-                    </td>
-                    <td>
-                        @Html.DropDownListFor(model => model.SjekkpunkterWithStatus[i].Status, new SelectList(new List<string> { "OK", "Bør skiftes", "Defekt" }, Model.SjekkpunkterWithStatus[i].Status), new { @class = "form-control" })
-                    </td>
-                </tr>
-            }
-        </tbody>
+         <tbody>
+                    @for (int groupIndex = 0; groupIndex < Model.GroupedSjekkpunkter.Count; groupIndex++)
+                    {
+                        var group = Model.GroupedSjekkpunkter[groupIndex];
+                        for (int sjekkpunktIndex = 0; sjekkpunktIndex < group.Sjekkpunkter.Count; sjekkpunktIndex++)
+                        {
+                            var sjekkpunkt = group.Sjekkpunkter[sjekkpunktIndex];
+                            bool isLastFive = groupIndex > 2 ;  // Check if it's one of the last five checkpoints
+                            <tr>
+                                @if (sjekkpunktIndex == 0)
+                                {
+                                    <td rowspan="@group.Sjekkpunkter.Count">@group.KategoriNavn</td>
+                                }
+                                <td>@sjekkpunkt.Sjekkpunkt.SjekkpunktNavn</td>
+                                 @if (!isLastFive)
+                                                        {
+                                                            <td><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="OK" /></td>
+                                                            <td><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="Bør skiftes" /></td>
+                                                            <td><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="Defekt" /></td>
+                                                            <td><input type="hidden" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="null"/></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td colspan="3">
+                                                                <input type="text" class="form-control" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" />
+                                                            </td>
+                                                        }
+                                <input type="hidden" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Sjekkpunkt.SjekkpunktID" />
+                            </tr>
+                        }
+                    }
+                </tbody>
     </table>
 
-    <button type="submit" class="btn btn-primary">Update Checklist</button>
+    <button type="submit" class="btn btn-success">Save Changes</button>
 </form>
+
+<a asp-action="Details" asp-route-id="@Model.SjekklisteId" class="btn btn-secondary">Cancel</a>
+</body>

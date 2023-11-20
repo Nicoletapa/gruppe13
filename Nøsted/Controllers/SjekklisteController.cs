@@ -33,7 +33,7 @@ namespace Nøsted.Controllers
 
         }
 
-        // GET: Sjekkliste/Details/5
+  
        
         // GET: Sjekkliste/Details/5
         public async Task<IActionResult> Details(Guid id)
@@ -43,31 +43,37 @@ namespace Nøsted.Controllers
                 return NotFound();
             }
 
-            var sjekklisteSjekkpunkter = await _context.SjekklisteSjekkpunkt
+            var sjekkliste = await _context.SjekklisteSjekkpunkt
                 .Where(sl => sl.SjekklisteID == id)
                 .Include(sl => sl.sjekkpunkt)
                 .ThenInclude(s => s.Kategori)
                 .ToListAsync();
 
-            if (sjekklisteSjekkpunkter == null || !sjekklisteSjekkpunkter.Any())
+            if (sjekkliste == null || !sjekkliste.Any())
             {
                 return NotFound();
             }
+            var groupedSjekkpunkter = sjekkliste
+                .GroupBy(sl => sl.sjekkpunkt.Kategori.KategoriNavn)
+                .Select(group => new SjekkpunktGroup
+                {
+                    KategoriNavn = group.Key,
+                    Sjekkpunkter = group.Select(sls => new SjekkpunktWithStatus
+                    {
+                        Sjekkpunkt = sls.sjekkpunkt,
+                        Status = sls.Status != null ? sls.Status : "Null" 
+                    }).ToList()
+                }).ToList();
 
             var viewModel = new CreateSjekklisteSjekkpunktViewModel()
             {
                 SjekklisteId = id,
-                SjekkpunkterWithStatus = sjekklisteSjekkpunkter.Select(sls => new SjekkpunktWithStatus
-                {
-                    Sjekkpunkt = sls.sjekkpunkt,
-                    Status = sls.Status
-                }).ToList()
+                GroupedSjekkpunkter = groupedSjekkpunkter
             };
 
             return View(viewModel);
         }
 
-        
 [HttpGet]
 public async Task<IActionResult> Create(int orderId)
 {
@@ -82,6 +88,8 @@ public async Task<IActionResult> Create(int orderId)
 
     var newSjekklisteId = Guid.NewGuid();
     var sjekkpunkter = await _context.Sjekkpunkt.ToListAsync();
+    var kategorier = await _context.Kategori.ToListAsync(); // Fetch categories
+
     var sjekklisteSjekkpunktList = new List<SjekklisteSjekkpunkt>();
     
     foreach (var sjekkpunkt in sjekkpunkter)
@@ -91,22 +99,36 @@ public async Task<IActionResult> Create(int orderId)
             SjekklisteID = newSjekklisteId,
             SjekkpunktID = sjekkpunkt.SjekkpunktID,
             OrdreNr = orderId,
-            Status = "OK" ,// Default status
+            Status = null ,// Default status
             sjekkpunkt = sjekkpunkt
         });
     }
+    
 
     _context.SjekklisteSjekkpunkt.AddRange(sjekklisteSjekkpunktList);
     await _context.SaveChangesAsync();
+   
+    var groupedSjekkpunkter = sjekkpunkter
+            
+            .GroupBy(sp => sp.Kategori != null ? sp.Kategori.KategoriNavn : "Uncategorized")
+            .Select(group => new SjekkpunktGroup
+            {
+                KategoriNavn = group.Key,
+                Sjekkpunkter = group.Select(sp => new SjekkpunktWithStatus
+                {
+                    Sjekkpunkt = sp,
+                    Status = null
+                }).ToList()
+            }).ToList();
 
     var viewModel = new CreateSjekklisteSjekkpunktViewModel
     {
+        GroupedSjekkpunkter = groupedSjekkpunkter , // Ensure it's not null
         SjekklisteId = newSjekklisteId,
-        SjekkpunkterWithStatus = sjekkpunkter.Select(sp => new SjekkpunktWithStatus
-        {
-            Sjekkpunkt = sp,
-            Status = "OK" // default status
-        }).ToList()
+        Kategorier = kategorier
+
+        
+        // Other properties as needed
     };
 
     return View(viewModel);
@@ -118,27 +140,30 @@ public async Task<IActionResult> Create(CreateSjekklisteSjekkpunktViewModel view
 {
     if (ModelState.IsValid)
     {
-        foreach (var sjekkpunktStatus in viewModel.SjekkpunkterWithStatus)
+        foreach (var group in viewModel.GroupedSjekkpunkter)
         {
-            var existingEntry = _context.SjekklisteSjekkpunkt.FirstOrDefault(
-                s => s.SjekkpunktID == sjekkpunktStatus.Sjekkpunkt.SjekkpunktID
-                     && s.SjekklisteID == viewModel.SjekklisteId);
+            foreach (var sjekkpunktStatus in group.Sjekkpunkter)
+            {
+                var existingEntry = await _context.SjekklisteSjekkpunkt.FirstOrDefaultAsync(
+                    s => s.SjekkpunktID == sjekkpunktStatus.Sjekkpunkt.SjekkpunktID
+                         && s.SjekklisteID == viewModel.SjekklisteId);
 
-            if (existingEntry != null)
-            {
-                existingEntry.Status = sjekkpunktStatus.Status;
-                _context.Entry(existingEntry).State = EntityState.Modified; // Mark entity as modified
-            }
-            else
-            {
-                var sjekklisteSjekkpunkt = new SjekklisteSjekkpunkt
+                if (existingEntry != null)
                 {
-                    SjekkpunktID = sjekkpunktStatus.Sjekkpunkt.SjekkpunktID,
-                    Status = sjekkpunktStatus.Status,
-                    SjekklisteID = viewModel.SjekklisteId,
-                    OrdreNr = viewModel.OrdreNr
-                };
-                _context.SjekklisteSjekkpunkt.Add(sjekklisteSjekkpunkt);
+                    existingEntry.Status = sjekkpunktStatus.Status;
+                    _context.Update(existingEntry); // Make sure to update the entity in the context
+                }
+                else
+                {
+                    var sjekklisteSjekkpunkt = new SjekklisteSjekkpunkt
+                    {
+                        SjekkpunktID = sjekkpunktStatus.Sjekkpunkt.SjekkpunktID,
+                        Status = sjekkpunktStatus.Status,
+                        SjekklisteID = viewModel.SjekklisteId,
+                        OrdreNr = viewModel.OrdreNr
+                    };
+                    _context.SjekklisteSjekkpunkt.Add(sjekklisteSjekkpunkt);
+                }
             }
         }
 
@@ -148,51 +173,70 @@ public async Task<IActionResult> Create(CreateSjekklisteSjekkpunktViewModel view
 
     return View(viewModel);
 }
+        
+
+[HttpGet]
+public async Task<IActionResult> Edit(Guid sjekklisteId)
+{
+    var sjekklisteSjekkpunkter = await _context.SjekklisteSjekkpunkt
+        .Include(ss => ss.sjekkpunkt)
+        .ThenInclude(s => s.Kategori)
+        .Where(ss => ss.SjekklisteID == sjekklisteId)
+        .ToListAsync();
+
+    if (sjekklisteSjekkpunkter == null || !sjekklisteSjekkpunkter.Any())
+    {
+        return NotFound();
+    }
+
+    var groupedSjekkpunkter = sjekklisteSjekkpunkter
+        .GroupBy(ss => ss.sjekkpunkt.Kategori.KategoriNavn)
+        .Select(group => new SjekkpunktGroup
+        {
+            KategoriNavn = group.Key,
+            Sjekkpunkter = group.Select(ss => new SjekkpunktWithStatus
+            {
+                Sjekkpunkt = ss.sjekkpunkt,
+                Status = ss.Status ?? "Null"
+            }).ToList()
+        }).ToList();
+
+    var viewModel = new CreateSjekklisteSjekkpunktViewModel()
+    {
+        SjekklisteId = sjekklisteId,
+        GroupedSjekkpunkter = groupedSjekkpunkter
+        // Populate other necessary fields
+    };
+
+    return View(viewModel);
+}
 
 
-        [HttpGet]
-                public async Task<IActionResult> Edit(Guid sjekklisteId)
-                {
-                    var sjekkliste = await _context.SjekklisteSjekkpunkt
-                        .Include(s => s.sjekkpunkt)
-                        .Where(s => s.SjekklisteID == sjekklisteId)
-                        .ToListAsync();
 
-                    if (sjekkliste == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var viewModel = new CreateSjekklisteSjekkpunktViewModel
-                    {
-                        SjekklisteId = sjekklisteId,
-                        SjekkpunkterWithStatus = sjekkliste.Select(s => new SjekkpunktWithStatus
-                        {
-                            Sjekkpunkt = s.sjekkpunkt,
-                            Status = s.Status
-                        }).ToList()
-                    };
-
-                    return View(viewModel);
-                }
-
-
-       
 [HttpPost]
 [ValidateAntiForgeryToken]
 public async Task<IActionResult> Edit(CreateSjekklisteSjekkpunktViewModel viewModel)
 {
     if (ModelState.IsValid)
     {
-        foreach (var sjekkpunktStatus in viewModel.SjekkpunkterWithStatus)
-        {
-            var sjekklisteSjekkpunkt = await _context.SjekklisteSjekkpunkt
-                .FirstOrDefaultAsync(s => s.SjekkpunktID == sjekkpunktStatus.Sjekkpunkt.SjekkpunktID
-                                          && s.SjekklisteID == viewModel.SjekklisteId);
+        // Fetch existing entries
+        var existingEntries = await _context.SjekklisteSjekkpunkt
+            .Where(ss => ss.SjekklisteID == viewModel.SjekklisteId)
+            .ToListAsync();
 
-            if (sjekklisteSjekkpunkt != null)
+        // Update each entry
+        foreach (var group in viewModel.GroupedSjekkpunkter)
+        {
+            foreach (var sjekkpunktStatus in group.Sjekkpunkter)
             {
-                sjekklisteSjekkpunkt.Status = sjekkpunktStatus.Status;
+                var existingEntry = existingEntries.FirstOrDefault(
+                    e => e.SjekkpunktID == sjekkpunktStatus.Sjekkpunkt.SjekkpunktID);
+
+                if (existingEntry != null)
+                {
+                    existingEntry.Status = sjekkpunktStatus.Status;
+                    _context.Update(existingEntry); // Update the entity in the context
+                }
             }
         }
 
@@ -200,50 +244,39 @@ public async Task<IActionResult> Edit(CreateSjekklisteSjekkpunktViewModel viewMo
         return RedirectToAction("Details", new { id = viewModel.SjekklisteId });
     }
 
-    // If model state is not valid, return the view with current model to show validation errors
+    // If we got this far, something failed, redisplay form
     return View(viewModel);
 }
+        
+[HttpGet]
+public async Task<IActionResult> Delete(Guid id)
+{
+    var sjekkliste = await _context.SjekklisteSjekkpunkt
+        .FirstOrDefaultAsync(sl => sl.SjekklisteID == id);
 
+    if (sjekkliste == null)
+    {
+        return NotFound(); // Sjekkliste not found
+    }
 
-        // POST: Sjekkliste/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        /*[HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("SjekklisteSjekkpunktID")] SjekklisteSjekkpunkt sjekkliste)
-        {
-            if (id != sjekkliste.SjekklisteID)
-            {
-                return NotFound();
-            }
+    int orderId = sjekkliste.OrdreNr; // Assuming OrdreNr is a property of SjekklisteSjekkpunkt
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(sjekkliste);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SjekklisteExists(sjekkliste.SjekklisteID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(sjekkliste);
-        }*/
+    // Find all SjekklisteSjekkpunkt entries related to the orderId
+    var sjekklisteSjekkpunkter = await _context.SjekklisteSjekkpunkt
+        .Where(sl => sl.OrdreNr == orderId)
+        .ToListAsync();
 
+    if (sjekklisteSjekkpunkter == null || !sjekklisteSjekkpunkter.Any())
+    {
+        return NotFound(); // No SjekklisteSjekkpunkt found for the given orderId
+    }
+
+    return View(sjekklisteSjekkpunkter);
+}
         // GET: Sjekkliste/Delete/5
-        [HttpGet]
-        public async Task<IActionResult> Delete(Guid id)
-        {
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed (Guid id)        {
             var sjekkliste = await _context.SjekklisteSjekkpunkt
                 .FirstOrDefaultAsync(sl => sl.SjekklisteID == id);
 
@@ -276,7 +309,7 @@ public async Task<IActionResult> Edit(CreateSjekklisteSjekkpunktViewModel viewMo
 
        
 
-        // POST: Sjekkliste/Delete/5
+        /*// POST: Sjekkliste/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed (Guid id)
@@ -295,7 +328,7 @@ public async Task<IActionResult> Edit(CreateSjekklisteSjekkpunktViewModel viewMo
 
             // Redirect to a success page or another appropriate action
             return RedirectToAction("Details", "Ordre"); // Replace 'Index' with your desired landing page
-        }
+        }*/
         // private bool SjekklisteExists(int id)
         // {
         //     return (_context.SjekklisteSjekkpunkt?.Any(e => e.SjekklisteID == id)).GetValueOrDefault();

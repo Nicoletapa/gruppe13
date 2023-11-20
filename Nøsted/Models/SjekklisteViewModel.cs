@@ -53,7 +53,7 @@ public class Sjekkpunkt
         [ForeignKey("OrdreNr")] 
         public int OrdreNr { get; set; }
        
-        public string Status { get; set; }
+        public string? Status { get; set; }
        
         public Sjekkpunkt sjekkpunkt { get; set; } // Navigation for Sjekkpunkt 
         
@@ -61,23 +61,21 @@ public class Sjekkpunkt
       
     }
 
-// public class SjekkpunktGroup
-// {
-//     [ValidateNever]
-//     public string KategoriNavn { get; set; }
-//     [ValidateNever]
-//     public int Rowspan { get; set; }
-//     [ValidateNever]
-//     public List<SjekkpunktWithStatus> Sjekkpunkter { get; set; } // Changed to include status
-//
-// }
+
 
 public class SjekkpunktWithStatus
 {
     public Sjekkpunkt Sjekkpunkt { get; set; }
-    public string Status { get; set; }
+    public string? Status { get; set; }
 }
+public class SjekkpunktGroup
+{
+    [ValidateNever]
+    public string KategoriNavn { get; set; }
+    
+    public List<SjekkpunktWithStatus> Sjekkpunkter { get; set; } // Changed to include status
 
+}
 
 public class CreateSjekklisteSjekkpunktViewModel
 {
@@ -85,13 +83,15 @@ public class CreateSjekklisteSjekkpunktViewModel
    
     [ValidateNever]
     public List<Sjekkpunkt> Sjekkpunkter { get; set; } = new();
-
+    public List<SjekkpunktGroup> GroupedSjekkpunkter { get; set; } = new List<SjekkpunktGroup>();
     [ValidateNever]
     public SjekklisteSjekkpunkt sjekklisteSjekkpunkt { get; set; } 
     [ValidateNever]
     public Kategori kategori { get; set; }
     public Guid SjekklisteId { get; set; }
-    public List<SjekkpunktWithStatus> SjekkpunkterWithStatus { get; set; } = new List<SjekkpunktWithStatus>();
+  public List<SjekkpunktWithStatus> SjekkpunkterWithStatus { get; set; } = new List<SjekkpunktWithStatus>();
+   [ValidateNever]
+ public List<Kategori> Kategorier { get; set; } // Add this line
 
     public int OrdreNr { get; set; }
-}
+} 

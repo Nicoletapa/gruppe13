@@ -196,3 +196,8 @@ nav {
   color: #babfc0 !important;
   border-color: #933030;
 }
+.radio {
+  transform: scale(1.5); /* Increase the size of radio buttons */
+  margin: 5px; /* Add some margin around the buttons */
+  vertical-align: middle;
+}
