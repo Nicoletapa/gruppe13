@@ -1,10 +1,10 @@
 @model CreateSjekklisteSjekkpunktViewModel
 
 @{
-    ViewBag.Title = "Edit Checklist";
+    ViewBag.Title = "Redigere sjekkliste";
 }
 <body class="text-font">
-<h2>Edit Checklist</h2>
+<h2>Redigere sjekkliste</h2>
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="SjekklisteId" />
@@ -12,8 +12,8 @@
     <table class="table table-hover">
         <thead>
         <tr>
-            <th>Category</th>
-            <th>Checkpoint</th>
+            <th>Kategori</th>
+            <th>Sjekkpunkter</th>
             <th>OK</th>
             <th>Bør skiftes</th>
             <th>Defekt</th>
@@ -53,8 +53,8 @@
                 </tbody>
     </table>
 
-    <button type="submit" class="btn btn-success">Save Changes</button>
+    <button type="submit" class="btn btn-success">Lagre endringer</button>
 </form>
 
-<a asp-action="Details" asp-route-id="@Model.SjekklisteId" class="btn btn-secondary">Cancel</a>
+<a asp-action="Details" asp-route-id="@Model.SjekklisteId" class="btn btn-secondary">Avbryt</a>
 </body>

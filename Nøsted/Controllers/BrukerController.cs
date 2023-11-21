@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Nøsted.Data;
 using Nøsted.Models;
@@ -27,11 +22,30 @@ namespace Nøsted.Controllers
         }
 
         [HttpGet]
-        public IActionResult ListUsers()
+        public async Task<IActionResult> ListUsers()
         {
-            var users = _userManager.Users;
-            return View(users);
+            var users = await _userManager.Users.ToListAsync();
+            var model = new List<UserRoleViewModel>();
+            
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var currentRole = roles.FirstOrDefault(); // Gets the first role, or null if there are no roles
+
+                model.Add(new UserRoleViewModel
+                {
+                    UserId = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    CurrentRole = currentRole // Setting the CurrentRole for the user
+                });
+            }
+
+            return View(model);
         }
+
+
+        
         
         [HttpGet]
         public IActionResult ListRoles()
@@ -39,6 +53,8 @@ namespace Nøsted.Controllers
             var roles = _roleManager.Roles;
             return View(roles);
         }
+
+    
 
         [HttpGet]
         public async Task<IActionResult> EditRole(string id)
@@ -51,21 +67,13 @@ namespace Nøsted.Controllers
                 return View();
 
             }
-
             var model = new EditRoleViewModel()
             {
                 Id = role.Id,
                 RoleName = role.Name,
-                Users = new List<string>() // Initialize the Users property
+                
             };
-            foreach (var user in _userManager.Users.ToList())
-            {
-                if (await _userManager.IsInRoleAsync(user, role.Name))
-                {
-                    model.Users.Add(user.UserName);
-                }
-            }
-
+            
             return View(model);
 
         }
@@ -103,6 +111,7 @@ namespace Nøsted.Controllers
             }
         }
 
+        
         [HttpGet]
         public IActionResult CreateRole()
         {
@@ -133,145 +142,117 @@ namespace Nøsted.Controllers
             return View(model);
         }
 
-        // GET: Bruker
-        public async Task<IActionResult> Index()
+        
+        
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> EditUserRoles(string userId)
         {
-              return _context.bruker != null ? 
-                          View(await _context.bruker.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Bruker'  is null.");
-        }
-
-        // GET: Bruker/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null || _context.bruker == null)
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
             {
+                // Handle user not found
                 return NotFound();
             }
+            ViewBag.Roles = _roleManager.Roles
+                .Where(r => r.Name != "Admin") // Filter out the "Admin" role
+                .Select(r => r.Name)
+                .ToList();
 
-            var bruker = await _context.bruker
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (bruker == null)
+
+            var userRoleViewModel = new UserRoleViewModel
             {
-                return NotFound();
-            }
+                UserId = userId,
+                UserName = user.UserName,
+                Email = user.Email,
+                CurrentRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault(),
+                AvailableRoles = _roleManager.Roles.Select(r => r.Name).ToList()
+            };
 
-            return View(bruker);
+            return View(userRoleViewModel);
         }
 
-        // GET: Bruker/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
 
-        // POST: Bruker/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] Bruker bruker)
+        public async Task<IActionResult> EditUserRoles(UserRoleViewModel model)
         {
-            if (ModelState.IsValid)
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            if (user == null)
             {
-                _context.Add(bruker);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(bruker);
-        }
-
-        // GET: Bruker/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null || _context.bruker == null)
-            {
+                // Handle user not found
                 return NotFound();
             }
 
-            var bruker = await _context.bruker.FindAsync(id);
-            if (bruker == null)
-            {
-                return NotFound();
-            }
-            return View(bruker);
-        }
-
-        // POST: Bruker/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] Bruker bruker)
-        {
-            if (id != bruker.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(bruker);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BrukerExists(bruker.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(bruker);
-        }
-
-        // GET: Bruker/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null || _context.bruker == null)
-            {
-                return NotFound();
-            }
-
-            var bruker = await _context.bruker
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (bruker == null)
-            {
-                return NotFound();
-            }
-
-            return View(bruker);
-        }
-
-        // POST: Bruker/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            if (_context.bruker == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Bruker'  is null.");
-            }
-            var bruker = await _context.bruker.FindAsync(id);
-            if (bruker != null)
-            {
-                _context.bruker.Remove(bruker);
-            }
+            var currentRoles = await _userManager.GetRolesAsync(user);
             
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            if (!currentRoles.Contains(model.CurrentRole))
+            {
+                await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                await _userManager.AddToRoleAsync(user, model.NewRole);
+            }
+
+            // Redirect after successful update
+            return RedirectToAction("ListUsers");
         }
+
 
         private bool BrukerExists(string id)
         {
-          return (_context.bruker?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+        
+        
+        // POST: Bruker/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                // User not found, handle accordingly
+                return NotFound();
+            }
+
+            // Get the roles associated with the user
+            var roles = await _userManager.GetRolesAsync(user);
+
+            // Remove user from roles
+            var result = await _userManager.RemoveFromRolesAsync(user, roles);
+          
+
+            // Delete the user
+            result = await _userManager.DeleteAsync(user);
+            
+
+            // Redirect to the user list or a confirmation page after deletion
+            return RedirectToAction(nameof(ListUsers));
+        }
+
+         /*// GET: Bruker/Create
+                public IActionResult Create()
+                {
+                    return View();
+                }
+        
+                // POST: Bruker/Create
+                // To protect from overposting attacks, enable the specific properties you want to bind to.
+                // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+                [HttpPost]
+                [ValidateAntiForgeryToken]
+                public async Task<IActionResult> Create([Bind("Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] Bruker bruker)
+                {
+                    if (ModelState.IsValid)
+                    {
+                        _context.Add(bruker);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    return View(bruker);
+                }*/
+
+        
     }
 }

@@ -20,20 +20,7 @@ namespace Nøsted.Controllers
             _context = context;
         }
 
-        // GET: Sjekkliste
-        public async Task<IActionResult> Index()
-        {
-            var viewModel = new CreateSjekklisteSjekkpunktViewModel
-            {
-
-                sjekklisteSjekkpunkt = await _context.SjekklisteSjekkpunkt.FirstOrDefaultAsync()
-            };
-            return View(viewModel);
-
-
-        }
-
-  
+        
        
         // GET: Sjekkliste/Details/5
         public async Task<IActionResult> Details(Guid id)

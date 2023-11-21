@@ -1,4 +1,4 @@
-@model EditRoleViewModel
+@*@model EditRoleViewModel
 
 @{
     ViewBag.Title = "Edit Role";
@@ -48,8 +48,7 @@
             }
         </div>
         <div class="card-footer">
-            <a href="#" class="btn btn-primary" style="width:auto">Add Users</a>
-            <a href="#" class="btn btn-primary" style="width:auto">Remove Users</a>
+            <a asp-action="EditUsersInRole" class="btn btn-primary" asp-route-roleId="@Model.Id" style="width:auto">Legge til eller fjerne brukere</a>
         </div>
     </div>
-</form>
+</form>*@

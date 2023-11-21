@@ -1,4 +1,4 @@
-@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+@*@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
 
 @{
     ViewBag.Title ="All Roles";
@@ -30,7 +30,7 @@
                     <h5 class="card-title">@role.Name</h5>
                 </div>
                 <div class="card-footer">
-                    <a class="btn btn-primary" asp-action="EditRole" asp-controller="Bruker" asp-route-is="@role.Id">Edit</a>
+                    <a class="btn btn-primary" asp-action="EditRole" asp-controller="Bruker" asp-route-id="@role.Id">Edit</a>
                     <a  class="btn btn-primary" asp-action="DeleteRole" asp-controller="Bruker">Delete</a>
                 </div>
             </div>
@@ -60,4 +60,4 @@
 
 </div>
 </body>
-</html>
+</html>*@

@@ -1,59 +1,44 @@
-@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+@model IEnumerable<UserRoleViewModel>
+
 
 @{
-    ViewBag.Title = "All Users";
+    ViewBag.Title = "ListUsers";
 }
-
-<!DOCTYPE html>
 
 <html>
-<head>
-    <title>All users</title>
-</head>
-<h1>Users</h1>
-<body>
+<body class="text-font">
+<h1>Brukere</h1>
 
-<div>
-@if (Model.Any())
-{
-    <a asp-page="/Account/Register"
-       asp-area="Identity" class="btn btn-primary mb-3" style="width: auto">
-        Add new user
-    </a>
-    foreach (var user in Model)
+<a asp-page="/Account/Register"
+   asp-area="Identity" class="btn btn-primary mb-3" style="width: auto">
+    Add new user
+</a>
+<form asp-action="ListUsers" method="get">
+    <input type="text" name="searchQuery" />
+    <button type="submit">Search</button>
+
+<table class="table table-hover">
+    <tr>
+        <th>BrukerNavn</th>
+        <th>Email</th>
+        <th>Rolle</th>
+        <th>Handlinger</th> <!-- Added a header for actions -->
+    </tr>
+    @foreach (var user in Model)
     {
-        <div class="card mb-3">
-            <div class="card-header">
-                User id: @user.Id
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">@user.UserName</h5>
-            </div>
-            <div class="card-footer">
-                <a href="#" class="btn btn-primary">Edit</a>
-                 <a href="#" class="btn btn-primary">Delete</a>
-            </div>
-        </div>
+        <tr>
+            <td>@user.UserName</td>
+            <td>@user.Email</td>
+            <td>@user.CurrentRole</td> <!-- Display the current role -->
+            <td>
+                <a asp-action="EditUserRoles" asp-route-userId="@user.UserId" class="btn btn-warning mr-2">Endre</a>
+                <form asp-action="Delete" asp-route-id="@user.UserId" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
+                </form>
+            </td>
+
+        </tr>
     }
-    
-}
-else
-{
-    <div class="card">
-        <div class="card-header">
-            No users created yet 
-        </div>
-        <div class="card-body">
-            <h5 class="card-title">
-                Use the button bellow to create a user
-            </h5>
-            <a class="btn btn-primary" style="width: auto" asp-area="Identity" asp-page="/Account/Register">Add new user</a>
-        </div>
-
-    </div>
-    
-}
-
-</div>
+</table></form>
 </body>
 </html>

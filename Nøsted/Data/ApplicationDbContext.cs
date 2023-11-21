@@ -20,7 +20,7 @@ namespace Nøsted.Data;
         public DbSet<Kategori> Kategori { get; set; }
         public DbSet<Sjekkpunkt> Sjekkpunkt { get; set; }
         public DbSet<SjekklisteSjekkpunkt> SjekklisteSjekkpunkt { get; set; }
-        public DbSet<Bruker> bruker { get; set; } = default!;
+        //public DbSet<Bruker> Users { get; set; } = default!;
     
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -41,7 +41,7 @@ namespace Nøsted.Data;
             
                 
                 
-            modelBuilder.Entity<Bruker>().HasDiscriminator().HasValue("");
+            //modelBuilder.Entity<Bruker>().HasDiscriminator().HasValue("");
   
 
             // Define primary key for Sjekkpunkt entity
