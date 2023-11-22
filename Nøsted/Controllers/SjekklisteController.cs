@@ -293,29 +293,11 @@ public async Task<IActionResult> Delete(Guid id)
             // Redirect to a success page, or another appropriate action
             return RedirectToAction("Index", "Ordre"); // Replace 'Index' with your desired landing page after deletion
         }
+       
+
 
        
 
-        /*// POST: Sjekkliste/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed (Guid id)
-        {
-            var sjekklisteSjekkpunkter = await _context.SjekklisteSjekkpunkt
-                .Where(sl => sl.SjekklisteID == id)
-                .ToListAsync();
-
-            if (sjekklisteSjekkpunkter == null || !sjekklisteSjekkpunkter.Any())
-            {
-                return NotFound(); // Handle the case where no checklist is found
-            }
-
-            _context.SjekklisteSjekkpunkt.RemoveRange(sjekklisteSjekkpunkter);
-            await _context.SaveChangesAsync();
-
-            // Redirect to a success page or another appropriate action
-            return RedirectToAction("Details", "Ordre"); // Replace 'Index' with your desired landing page
-        }*/
         // private bool SjekklisteExists(int id)
         // {
         //     return (_context.SjekklisteSjekkpunkt?.Any(e => e.SjekklisteID == id)).GetValueOrDefault();

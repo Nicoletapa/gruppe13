@@ -31,8 +31,6 @@ public class Sjekkpunkt
                     public int KategoriID { get; set; } // Foreign key
 
                    public Kategori? Kategori { get; set; }
-                  //  public virtual Kategori Kategori { get; set; } // Navigation property
-
                     
 }
 

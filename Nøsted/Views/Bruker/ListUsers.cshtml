@@ -1,44 +1,46 @@
 @model IEnumerable<UserRoleViewModel>
 
-
 @{
     ViewBag.Title = "ListUsers";
 }
 
-<html>
-<body class="text-font">
+
+
+<body class="text-font text-center">
 <h1>Brukere</h1>
 
-<a asp-page="/Account/Register"
-   asp-area="Identity" class="btn btn-primary mb-3" style="width: auto">
-    Add new user
+<a asp-page="/Account/Register" asp-area="Identity" class="btn btn-primary mb-3" style="width: auto">
+    Legg til bruker
 </a>
-<form asp-action="ListUsers" method="get">
-    <input type="text" name="searchQuery" />
-    <button type="submit">Search</button>
 
+<form asp-action="ListUsers" method="get" class="search-container">
+    <input type="text" name="searchTerm" value="@Context.Request.Query["searchTerm"]" placeholder="Search users..." />
+    <button type="submit">Search</button>
+</form>
 <table class="table table-hover">
     <tr>
         <th>BrukerNavn</th>
         <th>Email</th>
         <th>Rolle</th>
-        <th>Handlinger</th> <!-- Added a header for actions -->
+        <th>Handlinger</th>
     </tr>
     @foreach (var user in Model)
     {
         <tr>
             <td>@user.UserName</td>
             <td>@user.Email</td>
-            <td>@user.CurrentRole</td> <!-- Display the current role -->
+            <td>@user.CurrentRole</td>
             <td>
-                <a asp-action="EditUserRoles" asp-route-userId="@user.UserId" class="btn btn-warning mr-2">Endre</a>
-                <form asp-action="Delete" asp-route-id="@user.UserId" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
-                </form>
+                @if (user.CurrentRole != "Admin")  // Replace "admin" with the actual admin identifier
+                {
+                    <a asp-action="EditUserRoles" asp-route-userId="@user.UserId" class="btn btn-warning">Edit</a>
+                    <form asp-action="Delete" asp-route-id="@user.UserId" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger" on>Delete</button>
+                    </form>
+                }
             </td>
-
+            
         </tr>
     }
-</table></form>
+</table>
 </body>
-</html>

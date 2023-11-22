@@ -1,63 +1,39 @@
-@*@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
 
 @{
-    ViewBag.Title ="All Roles";
+    ViewBag.Title = "Manage Roles";
 }
 
-<!DOCTYPE html>
 
-<html>
-<head>
-    <title>All roles</title>
-</head>
-<h1>Roles</h1>
-<body>
+<div class=" text-font role-management-container">
+    <h2>Manage Roles</h2>
+    <a asp-action="CreateRole" class="btn btn-success mb-3">Create New Role</a>
 
-<div>
-    @if (Model.Any())
-    {
-        <a asp-controller="Bruker"
-           asp-action="CreateRole" class="btn btn-primary mb-3" style="width: auto">
-            Add new role
-        </a>
-        foreach (var role in Model)
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th class="role-name">Role Name</th>
+            <th class="actions">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var role in Model)
         {
-            <div class="card mb-3">
-                <div class="card-header">
-                    Role id: @role.Id
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">@role.Name</h5>
-                </div>
-                <div class="card-footer">
-                    <a class="btn btn-primary" asp-action="EditRole" asp-controller="Bruker" asp-route-id="@role.Id">Edit</a>
-                    <a  class="btn btn-primary" asp-action="DeleteRole" asp-controller="Bruker">Delete</a>
-                </div>
-            </div>
+            <tr>
+               
+                <td class="role-name">@role.Name</td>
+                <td class="actions">
+                    <a asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-primary">Edit</a>
+                    <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this role?');">Delete</button>
+                    </form>
+                </td>
+                
+            </tr>
         }
-    
-    }
-    else
-    {
-        <div class="card">
-               <div class="card-header">
-                   No roles created yet
-               </div>
-               <div class="card-body">
-                   <h5 class="card-title">
-                       Use the button below to create a role
-                   </h5>
-                   <a class="btn btn-primary" style="width:auto"
-                      asp-controller="bruker" asp-action="CreateRole">
-                       Create Role
-                   </a>
-               </div>
-           </div>
-
-     
-    
-    }
-
+        </tbody>
+    </table>
 </div>
-</body>
-</html>*@
+
+
+

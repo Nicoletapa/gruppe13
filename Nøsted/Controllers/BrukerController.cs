@@ -20,13 +20,21 @@ namespace Nøsted.Controllers
             _userManager = userManager;
 
         }
-
         [HttpGet]
-        public async Task<IActionResult> ListUsers()
+        public async Task<IActionResult> ListUsers(string searchTerm)
         {
             var users = await _userManager.Users.ToListAsync();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                users = users.Where(user => user.UserName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) 
+                                            || user.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                                            || _userManager.GetRolesAsync(user).Result.Contains(searchTerm, StringComparer.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
             var model = new List<UserRoleViewModel>();
-            
+
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
@@ -130,7 +138,7 @@ namespace Nøsted.Controllers
                 IdentityResult result = await _roleManager.CreateAsync(identityRole);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("ListRoles");
                 }
 
                 foreach (IdentityError error in result.Errors)
@@ -140,6 +148,33 @@ namespace Nøsted.Controllers
             }
 
             return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteRole(string id)
+        {
+            var role = await _roleManager.FindByIdAsync(id);
+
+            if (role == null)
+            {
+                ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
+                return View("ListRoles");
+            }
+            else
+            {
+                var result = await _roleManager.DeleteAsync(role);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("ListRoles");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+
+                return View("ListRoles");
+            }
         }
 
         

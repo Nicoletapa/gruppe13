@@ -119,7 +119,7 @@ div {
   box-sizing: border-box;
 }
 a:any-link {
-  color: -webkit-link;
+
   cursor: auto;
 }
 body {
@@ -200,4 +200,98 @@ nav {
   transform: scale(1.5); /* Increase the size of radio buttons */
   margin: 5px; /* Add some margin around the buttons */
   vertical-align: middle;
+}
+.search-container {
+  margin-bottom: 20px;
+}
+
+.search-container input[type="text"] {
+  padding: 10px 20px; /* Increased padding */
+  width: 50%; /* Larger width */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 18px; /* Larger font size */
+}
+
+.search-container button {
+  padding: 10px 20px; /* Increased padding */
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px; /* Larger font size */
+}
+
+.search-container button:hover {
+  background-color: #0056b3;
+}
+.role-management-container {
+  width: 100%;
+  max-width: 960px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+
+
+.action-buttons .btn {
+  margin-right: 5px;
+}
+.centered-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  text-align: left;
+  margin-bottom: .5rem;
+}
+
+.form-group input,
+.form-group button,
+.form-group a {
+  width: 100%;
+  padding: .375rem .75rem;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.button-group .btn {
+  flex-grow: 1;
+  margin: 5px;
+}
+
+th.role-name, td.role-name {
+  width: 70%; /* Adjust the width of the role name column */
+}
+
+th.actions, td.actions {
+  width: 30%; /* Adjust the width of the actions column */
+  text-align: center;
+padding-right: 40px;
 }
