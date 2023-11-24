@@ -64,7 +64,7 @@ CREATE TABLE if not EXISTS __EFMigrationsHistory
     ProductVersion VARCHAR(32) NOT NULL
     );
 
-CREATE TABLE if not EXISTS bruker
+CREATE TABLE if not EXISTS Users
 (
     Id    INT AUTO_INCREMENT PRIMARY KEY,
     Name  VARCHAR(255) NULL,
@@ -83,7 +83,7 @@ CREATE TABLE if not EXISTS AspNetRoleClaims
     constraint Id
     unique (Id),
     constraint aspnetroleclaims_ibfk_1
-    foreign key (RoleId) references webappdatabase.AspNetRoles (Id)
+    foreign key (RoleId) references webappdatabase2.AspNetRoles (Id)
     );
 
 CREATE INDEX RoleId ON AspNetRoleClaims (RoleId);
@@ -98,7 +98,7 @@ CREATE TABLE if not EXISTS AspNetUserClaims
     constraint Id
     unique (Id),
     constraint aspnetuserclaims_ibfk_1
-    foreign key (UserId) references webappdatabase.AspNetUsers (Id)
+    foreign key (UserId) references webappdatabase2.AspNetUsers (Id)
     );
 
 CREATE INDEX UserId ON AspNetUserClaims (UserId);
@@ -113,7 +113,7 @@ CREATE TABLE if not EXISTS AspNetUserLogins
     constraint LoginProvider
     unique (LoginProvider),
     constraint aspnetuserlogins_ibfk_1
-    foreign key (UserId) references webappdatabase.AspNetUsers (Id)
+    foreign key (UserId) references webappdatabase2.AspNetUsers (Id)
     );
 
 CREATE INDEX UserId ON AspNetUserLogins (UserId);
@@ -124,9 +124,9 @@ CREATE TABLE if not EXISTS AspNetUserRoles
     RoleId varchar(255) not null,
     primary key (UserId, RoleId),
     constraint aspnetuserroles_ibfk_1
-    foreign key (UserId) references webappdatabase.AspNetUsers (Id),
+    foreign key (UserId) references webappdatabase2.AspNetUsers (Id),
     constraint aspnetuserroles_ibfk_2
-    foreign key (RoleId) references webappdatabase.AspNetRoles (Id)
+    foreign key (RoleId) references webappdatabase2.AspNetRoles (Id)
     );
 
 CREATE INDEX RoleId ON AspNetUserRoles (RoleId);
@@ -142,7 +142,7 @@ CREATE TABLE if not EXISTS AspNetUserTokens
 
 
 
-CREATE TABLE if not EXISTS Sjekkpunkt2
+CREATE TABLE if not EXISTS Sjekkpunkt
 (
     SjekkpunktID   int          not null
     primary key,
@@ -152,7 +152,7 @@ CREATE TABLE if not EXISTS Sjekkpunkt2
     foreign key (KategoriID) references webappdatabase2.Kategori (KategoriID)
     );
 
-CREATE INDEX KategoriID ON Sjekkpunkt2 (KategoriID);
+CREATE INDEX KategoriID ON Sjekkpunkt (KategoriID);
 
 CREATE TABLE if not EXISTS SjekklisteSjekkpunkt
 (
@@ -164,10 +164,10 @@ CREATE TABLE if not EXISTS SjekklisteSjekkpunkt
     OrdreNr      INT NOT NULL,
     CONSTRAINT Sjekkliste___fk FOREIGN KEY (OrdreNr) REFERENCES Ordre1 (OrdreNr),
     constraint SjekklisteSjekkpunkt___fk
-    foreign key (SjekkpunktID) references webappdatabase2.Sjekkpunkt2 (SjekkpunktID)
+    foreign key (SjekkpunktID) references webappdatabase2.Sjekkpunkt (SjekkpunktID)
     );
 
-INSERT INTO Sjekkpunkt2 (SjekkpunktID, SjekkpunktNavn, KategoriID) VALUES
+INSERT INTO Sjekkpunkt (SjekkpunktID, SjekkpunktNavn, KategoriID) VALUES
                                                                        (1, 'Sjekk clutch lameller for slitasje', 1),
                                                                        (2, 'Sjekk bremser. Bånd/pål', 1),
                                                                        (3, 'Sjekk lager for trommel', 1),
