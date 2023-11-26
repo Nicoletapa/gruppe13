@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nøsted.Data;
@@ -10,6 +11,7 @@ namespace Nøsted.Controllers
     /// <summary>
     /// Controller for managing checklists and checklist items.
     /// </summary>
+   
     public class SjekklisteController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -284,12 +286,11 @@ namespace Nøsted.Controllers
 
             return View(sjekklisteSjekkpunkter);
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-                
+                /// <summary>
+                /// 
+                /// </summary>
+                /// <param name="id"></param>
+                /// <returns></returns>
                 [HttpPost, ActionName("Delete")]
                 [ValidateAntiForgeryToken]
                 public async Task<IActionResult> DeleteConfirmed (Guid id)        {

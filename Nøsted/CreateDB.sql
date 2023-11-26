@@ -55,7 +55,7 @@ CREATE TABLE if not EXISTS Ordre1
     AvtaltFerdigstillelse datetime       null,
     ServiceFerdig         datetime       null,
     AntallTimer           decimal(10, 2) null,
-    Status                tinyint(1)     null
+    Status                int    null
     );
 
 CREATE TABLE if not EXISTS __EFMigrationsHistory
@@ -86,7 +86,7 @@ CREATE TABLE if not EXISTS AspNetRoleClaims
     foreign key (RoleId) references AspNetRoles (Id)
     );
 
-CREATE INDEX RoleId ON AspNetRoleClaims (RoleId);
+
 
 CREATE TABLE if not EXISTS AspNetUserClaims
 (
@@ -101,7 +101,7 @@ CREATE TABLE if not EXISTS AspNetUserClaims
     foreign key (UserId) references AspNetUsers (Id)
     );
 
-CREATE INDEX UserId ON AspNetUserClaims (UserId);
+
 
 CREATE TABLE if not EXISTS AspNetUserLogins
 (
@@ -116,7 +116,7 @@ CREATE TABLE if not EXISTS AspNetUserLogins
     foreign key (UserId) references AspNetUsers (Id)
     );
 
-CREATE INDEX UserId ON AspNetUserLogins (UserId);
+
 
 CREATE TABLE if not EXISTS AspNetUserRoles
 (
@@ -129,7 +129,6 @@ CREATE TABLE if not EXISTS AspNetUserRoles
     foreign key (RoleId) references AspNetRoles (Id)
     );
 
-CREATE INDEX RoleId ON AspNetUserRoles (RoleId);
 
 CREATE TABLE if not EXISTS AspNetUserTokens
 (
@@ -152,13 +151,13 @@ CREATE TABLE if not EXISTS Sjekkpunkt
     foreign key (KategoriID) references Kategori (KategoriID)
     );
 
-CREATE INDEX KategoriID ON Sjekkpunkt (KategoriID);
+
 
 CREATE TABLE if not EXISTS SjekklisteSjekkpunkt
 (
     SjekklisteSjekkpunktID int          not null
-    primary key,
-    SjekklisteID           int          null,
+    primary key auto_increment,
+    SjekklisteID           varchar(255)        null,
     Status                 varchar(255) null,
     SjekkpunktID           int          not null,
     OrdreNr      INT NOT NULL,
