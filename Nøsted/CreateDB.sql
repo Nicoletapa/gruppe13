@@ -83,7 +83,7 @@ CREATE TABLE if not EXISTS AspNetRoleClaims
     constraint Id
     unique (Id),
     constraint aspnetroleclaims_ibfk_1
-    foreign key (RoleId) references webappdatabase2.AspNetRoles (Id)
+    foreign key (RoleId) references AspNetRoles (Id)
     );
 
 CREATE INDEX RoleId ON AspNetRoleClaims (RoleId);
@@ -98,7 +98,7 @@ CREATE TABLE if not EXISTS AspNetUserClaims
     constraint Id
     unique (Id),
     constraint aspnetuserclaims_ibfk_1
-    foreign key (UserId) references webappdatabase2.AspNetUsers (Id)
+    foreign key (UserId) references AspNetUsers (Id)
     );
 
 CREATE INDEX UserId ON AspNetUserClaims (UserId);
@@ -124,9 +124,9 @@ CREATE TABLE if not EXISTS AspNetUserRoles
     RoleId varchar(255) not null,
     primary key (UserId, RoleId),
     constraint aspnetuserroles_ibfk_1
-    foreign key (UserId) references webappdatabase2.AspNetUsers (Id),
+    foreign key (UserId) references AspNetUsers (Id),
     constraint aspnetuserroles_ibfk_2
-    foreign key (RoleId) references webappdatabase2.AspNetRoles (Id)
+    foreign key (RoleId) references AspNetRoles (Id)
     );
 
 CREATE INDEX RoleId ON AspNetUserRoles (RoleId);
@@ -149,7 +149,7 @@ CREATE TABLE if not EXISTS Sjekkpunkt
     SjekkpunktNavn varchar(255) null,
     KategoriID     int          null,
     constraint sjekkpunkt2_ibfk_1
-    foreign key (KategoriID) references webappdatabase2.Kategori (KategoriID)
+    foreign key (KategoriID) references Kategori (KategoriID)
     );
 
 CREATE INDEX KategoriID ON Sjekkpunkt (KategoriID);
@@ -164,9 +164,15 @@ CREATE TABLE if not EXISTS SjekklisteSjekkpunkt
     OrdreNr      INT NOT NULL,
     CONSTRAINT Sjekkliste___fk FOREIGN KEY (OrdreNr) REFERENCES Ordre1 (OrdreNr),
     constraint SjekklisteSjekkpunkt___fk
-    foreign key (SjekkpunktID) references webappdatabase2.Sjekkpunkt (SjekkpunktID)
+    foreign key (SjekkpunktID) references Sjekkpunkt (SjekkpunktID)
     );
-
+-- Insert data into Kategori table
+INSERT INTO Kategori (KategoriID, KategoriNavn) VALUES
+                                                    (1, 'Mekanisk'),
+                                                    (2, 'Hydraulisk'),
+                                                    (3, 'Elektro'),
+                                                    (4, 'Trykk Settinger'),
+                                                    (5, 'Funksjonstest');
 INSERT INTO Sjekkpunkt (SjekkpunktID, SjekkpunktNavn, KategoriID) VALUES
                                                                        (1, 'Sjekk clutch lameller for slitasje', 1),
                                                                        (2, 'Sjekk bremser. Bånd/pål', 1),
@@ -187,15 +193,8 @@ INSERT INTO Sjekkpunkt (SjekkpunktID, SjekkpunktNavn, KategoriID) VALUES
                                                                        (17, 'Sjekk og test radio', 3),
                                                                        (18, 'Sjekk og test knappekasse', 3),
                                                                        (19, 'Xx_bar', 4),
-                                                                       (20, 'Test vinsj og kjør alle funksjoner', 4),
+                                                                       (20, 'Test vinsj og kjør alle funksjoner', 5),
                                                                        (21, 'TrekkKraft KN', 5),
                                                                        (22, 'BremseKraft KN', 5),
                                                                        (23, 'Kommentar', 5);
 
--- Insert data into Kategori table
-INSERT INTO Kategori (KategoriID, KategoriNavn) VALUES
-                                                    (1, 'Mekanisk'),
-                                                    (2, 'Hydraulisk'),
-                                                    (3, 'Elektro'),
-                                                    (4, 'Trykk Settinger'),
-                                                    (5, 'Funksjonstest');
