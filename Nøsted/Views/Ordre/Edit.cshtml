@@ -10,77 +10,78 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="OrdreNr" />
+            <input type="hidden" asp-for="OrdreNr"/>
             <div class="form-group">
                 <label asp-for="Navn" class="control-label"></label>
-                <input asp-for="Navn" class="form-control" />
+                <input asp-for="Navn" class="form-control"/>
                 <span asp-validation-for="Navn" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="TelefonNr" class="control-label"></label>
-                <input asp-for="TelefonNr" class="form-control" />
+                <input asp-for="TelefonNr" class="form-control"/>
                 <span asp-validation-for="TelefonNr" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Adresse" class="control-label"></label>
-                <input asp-for="Adresse" class="form-control" />
+                <input asp-for="Adresse" class="form-control"/>
                 <span asp-validation-for="Adresse" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Type" class="control-label"></label>
-                <input asp-for="Type" class="form-control" />
+                <input asp-for="Type" class="form-control"/>
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Gjelder" class="control-label"></label>
-                <input asp-for="Gjelder" class="form-control" />
+                <input asp-for="Gjelder" class="form-control"/>
                 <span asp-validation-for="Gjelder" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Epost" class="control-label"></label>
-                <input asp-for="Epost" class="form-control" />
+                <input asp-for="Epost" class="form-control"/>
                 <span asp-validation-for="Epost" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Uke" class="control-label"></label>
-                <input asp-for="Uke" class="form-control" />
+                <input asp-for="Uke" class="form-control"/>
                 <span asp-validation-for="Uke" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Registrert" class="control-label"></label>
-                <input asp-for="Registrert" class="form-control" />
+                <input asp-for="Registrert" class="form-control"/>
                 <span asp-validation-for="Registrert" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Bestilling" class="control-label"></label>
-                <input asp-for="Bestilling" class="form-control" />
+                <input asp-for="Bestilling" class="form-control"/>
                 <span asp-validation-for="Bestilling" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="AvtaltLevering" class="control-label"></label>
-                <input asp-for="AvtaltLevering" class="form-control" />
+                <input asp-for="AvtaltLevering" class="form-control"/>
                 <span asp-validation-for="AvtaltLevering" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ProduktMotatt" class="control-label"></label>
-                <input asp-for="ProduktMotatt" class="form-control" />
+                <input asp-for="ProduktMotatt" class="form-control"/>
                 <span asp-validation-for="ProduktMotatt" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="AvtaltFerdigstillelse" class="control-label"></label>
-                <input asp-for="AvtaltFerdigstillelse" class="form-control" />
+                <input asp-for="AvtaltFerdigstillelse" class="form-control"/>
                 <span asp-validation-for="AvtaltFerdigstillelse" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ServiceFerdig" class="control-label"></label>
-                <input asp-for="ServiceFerdig" class="form-control" />
+                <input asp-for="ServiceFerdig" class="form-control"/>
                 <span asp-validation-for="ServiceFerdig" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="AntallTimer" class="control-label"></label>
-                <input asp-for="AntallTimer" class="form-control" />
+                <input asp-for="AntallTimer" class="form-control"/>
                 <span asp-validation-for="AntallTimer" class="text-danger"></span>
             </div>
             @*<div class="form-group form-check">
@@ -89,9 +90,9 @@
                 </label>
             </div>*@
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            
-                </div>
+                <input type="submit" value="Save" class="btn btn-primary"/>
+
+            </div>
         </form>
     </div>
 </div>

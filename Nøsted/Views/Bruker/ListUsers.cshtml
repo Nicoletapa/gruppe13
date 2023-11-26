@@ -33,6 +33,7 @@
             <td>
                 @if (user.CurrentRole != "Admin")  // Replace "admin" with the actual admin identifier
                 {
+                    
                     <a asp-action="EditUserRoles" asp-route-userId="@user.UserId" class="btn btn-warning">Endre</a>
                     <form asp-action="Delete" asp-route-id="@user.UserId" method="post" class="d-inline">
                         @Html.AntiForgeryToken()

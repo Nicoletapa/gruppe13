@@ -1,0 +1,9 @@
+global using Xunit;
+global using Microsoft.EntityFrameworkCore;
+global using Nøsted.Data; 
+global using Nøsted.Models;
+global using System.Collections.Generic;
+global using Microsoft.AspNetCore.Mvc;
+global using System.Threading.Tasks;
+global using Nøsted.Entities;
+global using Nøsted.Controllers;  

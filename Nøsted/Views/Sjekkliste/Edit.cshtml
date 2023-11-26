@@ -7,53 +7,58 @@
 <h2>Redigere sjekkliste</h2>
 
 <form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="SjekklisteId" />
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="SjekklisteId"/>
 
     <table class="table table-hover">
         <thead>
-       
-            <tr>
-                <th>Kategori</th>
-                <th>Sjekkpunkter</th>
-                <th  class="text-center">OK</th>
-                <th  class="text-center">Bør skiftes</th>
-                <th  class="text-center">Defekt</th>
-            </tr>
-            
-        
+
+        <tr>
+            <th>Kategori</th>
+            <th>Sjekkpunkter</th>
+            <th class="text-center">OK</th>
+            <th class="text-center">Bør skiftes</th>
+            <th class="text-center">Defekt</th>
+        </tr>
+
+
         </thead>
-         <tbody>
-                    @for (int groupIndex = 0; groupIndex < Model.GroupedSjekkpunkter.Count; groupIndex++)
+        <tbody>
+        @for (int groupIndex = 0; groupIndex < Model.GroupedSjekkpunkter.Count; groupIndex++)
+        {
+            var group = Model.GroupedSjekkpunkter[groupIndex];
+            for (int sjekkpunktIndex = 0; sjekkpunktIndex < group.Sjekkpunkter.Count; sjekkpunktIndex++)
+            {
+                var sjekkpunkt = group.Sjekkpunkter[sjekkpunktIndex];
+                bool isLastFive = groupIndex > 2; // Check if it's one of the last five checkpoints
+                <tr>
+                    @if (sjekkpunktIndex == 0)
                     {
-                        var group = Model.GroupedSjekkpunkter[groupIndex];
-                        for (int sjekkpunktIndex = 0; sjekkpunktIndex < group.Sjekkpunkter.Count; sjekkpunktIndex++)
-                        {
-                            var sjekkpunkt = group.Sjekkpunkter[sjekkpunktIndex];
-                            bool isLastFive = groupIndex > 2 ;  // Check if it's one of the last five checkpoints
-                            <tr>
-                                @if (sjekkpunktIndex == 0)
-                                {
-                                    <td rowspan="@group.Sjekkpunkter.Count">@group.KategoriNavn</td>
-                                }
-                                <td>@sjekkpunkt.Sjekkpunkt.SjekkpunktNavn</td>
-                                 @if (!isLastFive)
-                                                        {
-                                                            <td><p class="radio"><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="OK" /></p></td>
-                                                            <td><p class="radio"><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="Bør skiftes" /></p></td>
-                                                            <td><p class="radio"><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="Defekt" /></p></td>
-                                                            <td><p class="radio"><input type="hidden" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value=""/></p></td>
-                                                        }
-                                                        else
-                                                        {
-                                                            <td colspan="3">
-                                                                <input type="text" class="form-control" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" />
-                                                            </td>
-                                                        }
-                                <input type="hidden" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Sjekkpunkt.SjekkpunktID" />
-                            </tr>
-                        }
+                        <td rowspan="@group.Sjekkpunkter.Count">@group.KategoriNavn</td>
                     }
-                </tbody>
+                    <td>@sjekkpunkt.Sjekkpunkt.SjekkpunktNavn</td>
+                    @if (!isLastFive)
+                    {
+                        <td>
+                            <p class="radio"><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="OK"/></p></td>
+                        <td>
+                            <p class="radio"><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="Bør skiftes"/></p></td>
+                        <td>
+                            <p class="radio"><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="Defekt"/></p></td>
+                        <td>
+                            <p class="radio"><input type="hidden" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value=""/></p></td>
+                    }
+                    else
+                    {
+                        <td colspan="3">
+                            <input type="text" class="form-control" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status"/>
+                        </td>
+                    }
+                    <input type="hidden" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Sjekkpunkt.SjekkpunktID"/>
+                </tr>
+            }
+        }
+        </tbody>
     </table>
 
     <button type="submit" class="btn btn-success">Lagre endringer</button>

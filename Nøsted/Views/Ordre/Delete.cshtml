@@ -111,8 +111,9 @@
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="OrdreNr" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="OrdreNr"/>
+        <input type="submit" value="Delete" class="btn btn-danger"/> |
         <a asp-action="Index">Tilbake til listen</a>
     </form>
 </div>

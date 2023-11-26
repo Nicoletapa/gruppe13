@@ -10,8 +10,9 @@
     <h4>Sjekkliste</h4>
     <hr />
     <form asp-action="Delete" method="post">
-        <input type="hidden" name="OrdreNr" value="id" /> <!-- Use ordreNr here -->
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="OrdreNr" value="id"/> <!-- Use ordreNr here -->
+        <input type="submit" value="Delete" class="btn btn-danger"/> |
         <a asp-action="Index" asp-controller="Ordre">Back to List</a>
     </form>
 </div>
