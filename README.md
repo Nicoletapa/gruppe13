@@ -1,5 +1,4 @@
 # gruppe13
-Gruppen har jobbed med programmering i sprint 1, 2 og 3, og progresjonen har gått ganske greit. gruppen har da jobbet  jobba med å koble til database, implementere xss, koble til docker og lage sjekkliste. sjekklisten har gruppen hatt problemer med, fordi den vil ikke koble til databasen og overføre data. Derfor så er ikke den funksjonen av selve applikasjon helt ferdig, som gruppen skal jobbe videre på på  i sprint 3. Det gruppen planlegger å gjøre videre er å lage en ansattliste, fikse roller (mekaniker, admin og kunde), og ha en statusfunksjon, men også prøve å bli ferdig med aturiasjon, pålogging, hente og lagre data fra database og dokumentasjon fram til neste og siste innlevering. 
 
 
 **Hvordan koble til database**
@@ -14,3 +13,7 @@ Gruppen har jobbed med programmering i sprint 1, 2 og 3, og progresjonen har gå
    - (enter the passoword ) Testingtesting1234
 
 5.  copy in the SQL from CreateDB.sql (line by line).
+
+Server i "Configuration string@2 i Appsettings.json må endres til "server=172.17.0.2" om det skal kjøres i dosker
+
+kjør Nøsted/Dockerfile for å kjøre i docker
