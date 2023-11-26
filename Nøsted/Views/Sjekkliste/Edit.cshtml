@@ -11,13 +11,16 @@
 
     <table class="table table-hover">
         <thead>
-        <tr>
-            <th>Kategori</th>
-            <th>Sjekkpunkter</th>
-            <th>OK</th>
-            <th>Bør skiftes</th>
-            <th>Defekt</th>
-        </tr>
+       
+            <tr>
+                <th>Kategori</th>
+                <th>Sjekkpunkter</th>
+                <th  class="text-center">OK</th>
+                <th  class="text-center">Bør skiftes</th>
+                <th  class="text-center">Defekt</th>
+            </tr>
+            
+        
         </thead>
          <tbody>
                     @for (int groupIndex = 0; groupIndex < Model.GroupedSjekkpunkter.Count; groupIndex++)
@@ -35,10 +38,10 @@
                                 <td>@sjekkpunkt.Sjekkpunkt.SjekkpunktNavn</td>
                                  @if (!isLastFive)
                                                         {
-                                                            <td><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="OK" /></td>
-                                                            <td><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="Bør skiftes" /></td>
-                                                            <td><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="Defekt" /></td>
-                                                            <td><input type="hidden" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="null"/></td>
+                                                            <td><p class="radio"><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="OK" /></p></td>
+                                                            <td><p class="radio"><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="Bør skiftes" /></p></td>
+                                                            <td><p class="radio"><input type="radio" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value="Defekt" /></p></td>
+                                                            <td><p class="radio"><input type="hidden" asp-for="@Model.GroupedSjekkpunkter[groupIndex].Sjekkpunkter[sjekkpunktIndex].Status" value=""/></p></td>
                                                         }
                                                         else
                                                         {

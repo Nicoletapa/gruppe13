@@ -113,7 +113,7 @@ CREATE TABLE if not EXISTS AspNetUserLogins
     constraint LoginProvider
     unique (LoginProvider),
     constraint aspnetuserlogins_ibfk_1
-    foreign key (UserId) references webappdatabase2.AspNetUsers (Id)
+    foreign key (UserId) references AspNetUsers (Id)
     );
 
 CREATE INDEX UserId ON AspNetUserLogins (UserId);

@@ -200,6 +200,7 @@ nav {
   transform: scale(1.5); /* Increase the size of radio buttons */
   margin: 5px; /* Add some margin around the buttons */
   vertical-align: middle;
+  text-align: center;
 }
 .search-container {
   margin-bottom: 20px;

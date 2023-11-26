@@ -1,88 +1,93 @@
-@model Nøsted.Models.OrdreViewModel
+@model Nøsted.Models.OrdreCompletionViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detaljer";
 }
 
-<h1 class="text-center mt-4 mb-4">Detaljer</h1>
-<body class="justify-content-center">
+<h1 class="text-center text-font mt-4 mb-4">Ordre Detaljer</h1>
+<body class="justify-content-center text-font">
 <div class="text-center">
-
     <hr />
-    <table class="table  table-hover table-bordered">
-        <tr class="table-active">
-            <th>Property</th>
-            <th>Value</th>
+    <table class="table">
+        <tr>
+            <th>OrdreNr</th>
+            <td>@Model.Ordre.OrdreNr</td>
         </tr>
         <tr>
-            <td>OrdreNr</td>
-            <td>@Html.DisplayFor(model => model.OrdreNr)</td>
+            <th>Navn</th>
+            <td>@Model.Ordre.Navn</td>
         </tr>
         <tr>
-            <td>Navn</td>
-            <td>@Html.DisplayFor(model => model.Navn)</td>
+            <th>TelefonNr</th>
+            <td>@Model.Ordre.TelefonNr</td>
         </tr>
         <tr>
-            <td>TelefonNr</td>
-            <td>@Html.DisplayFor(model => model.TelefonNr)</td>
+            <th>Epost</th>
+            <td>@Model.Ordre.Epost</td>
         </tr>
         <tr>
-            <td>Adresse</td>
-            <td>@Html.DisplayFor(model => model.Adresse)</td>
+            <th>Type</th>
+            <td>@Model.Ordre.Type</td>
         </tr>
         <tr>
-            <td>Type</td>
-            <td>@Html.DisplayFor(model => model.Type)</td>
+            <th>Gjelder</th>
+            <td>@Model.Ordre.Gjelder</td>
         </tr>
         <tr>
-            <td>Gjelder</td>
-            <td>@Html.DisplayFor(model => model.Gjelder)</td>
+            <th>Adresse</th>
+            <td>@Model.Ordre.Adresse</td>
         </tr>
         <tr>
-            <td>Epost</td>
-            <td>@Html.DisplayFor(model => model.Epost)</td>
+            <th>Uke</th>
+            <td>@Model.Ordre.Uke</td>
         </tr>
         <tr>
-            <td>Uke</td>
-            <td>@Html.DisplayFor(model => model.Uke)</td>
+            <th>Registrert</th>
+            <td>@Model.Ordre.Registrert?</td>
         </tr>
         <tr>
-            <td>Registrert</td>
-            <td>@Html.DisplayFor(model => model.Registrert)</td>
+            <th>Bestilling</th>
+            <td>@Model.Ordre.Bestilling</td>
         </tr>
         <tr>
-            <td>Bestilling</td>
-            <td>@Html.DisplayFor(model => model.Bestilling)</td>
+            <th>Avtalt Levering</th>
+            <td>@Model.Ordre.AvtaltLevering?</td>
         </tr>
         <tr>
-            <td>Avtalt Levering</td>
-            <td>@Html.DisplayFor(model => model.AvtaltLevering)</td>
+            <th>Produkt Mottatt</th>
+            <td>@Model.Ordre.ProduktMotatt?</td>
         </tr>
         <tr>
-            <td>Produkt motatt</td>
-            <td>@Html.DisplayFor(model => model.ProduktMotatt)</td>
+            <th>Avtalt Ferdigstillelse</th>
+            <td>@Model.Ordre.AvtaltFerdigstillelse?</td>
         </tr>
         <tr>
-            <td>Avtalt ferdigstillelse</td>
-            <td>@Html.DisplayFor(model => model.AvtaltFerdigstillelse)</td>
+            <th>Service Ferdig</th>
+            <td>@Model.Ordre.ServiceFerdig?</td>
         </tr>
         <tr>
-            <td>Service ferdig</td>
-            <td>@Html.DisplayFor(model => model.ServiceFerdig)</td>
+            <th>Antall Timer</th>
+            <td>@Model.Ordre.AntallTimer</td>
         </tr>
         <tr>
-            <td>Antall timer</td>
-            <td>@Html.DisplayFor(model => model.AntallTimer)</td>
-        </tr>
-        <tr>
-            <td>Status</td>
-            <td>@Html.DisplayFor(model => model.Status)</td>
+            <th>Status</th>
+            <td>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" 
+                         style="width: @Model.CompletionPercentage%;" 
+                         aria-valuenow="@Model.CompletionPercentage" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100">
+                        @Model.CompletionPercentage% Complete
+                    </div>
+                </div>
+            </td>
         </tr>
     </table>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-Id="@Model.OrdreNr">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-    <a asp-action="Create" asp-controller="Sjekkliste" asp-route-orderId="@Model.OrdreNr">Sjekkliste</a>
+<div class="text-center">
+    <a asp-action="Edit" asp-route-Id="@Model.Ordre.OrdreNr" class="btn btn-warning">Endre</a> |
+    <a asp-action="Index" class="btn btn-danger">Tilbake til listen</a> |
+    <a asp-action="Create" asp-controller="Sjekkliste" asp-route-orderId="@Model.Ordre.OrdreNr" class="btn btn-primary">Sjekkliste</a>
 </div>
 </body>

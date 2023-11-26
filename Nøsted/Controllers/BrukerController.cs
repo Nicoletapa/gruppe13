@@ -20,6 +20,56 @@ namespace Nøsted.Controllers
             _userManager = userManager;
 
         }
+        //private metoder
+        /// <summary>
+        /// Retrieves a user by their ID or returns an error view if the user is not found.
+        /// </summary>
+        /// <param name="userId">The ID of the user to retrieve.</param>
+        /// <returns>An IActionResult representing either the user or an error view.</returns>
+        private async Task<IActionResult> GetUserOrNotFoundResult(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with ID = {userId} not found.";
+                return View("Error"); // A view that shows the error message
+            }
+            return null; // User found, return null to indicate no error
+        }
+
+        /// <summary>
+        /// Retrieves a role by its ID or returns an error view if the role is not found.
+        /// </summary>
+        /// <param name="roleId">The ID of the role to retrieve.</param>
+        /// <returns>An IActionResult representing either the role or an error view.</returns>
+        private async Task<IActionResult> GetRoleOrNotFoundResult(string roleId)
+        {
+            var role = await _roleManager.FindByIdAsync(roleId);
+            if (role == null)
+            {
+                ViewBag.ErrorMessage = $"Role with ID = {roleId} not found.";
+                return View("Error"); // A view that shows the error message
+            }
+            return null; // Role found, return null to indicate no error
+        }
+        /// <summary>
+        /// Adds errors from IdentityResult to the ModelState.
+        /// </summary>
+        /// <param name="result">The IdentityResult containing errors.</param>
+        private void AddErrorsToModelState(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+        }
+
+        //Actions
+        /// <summary>
+        /// Displays a list of users with an optional search term filter.
+        /// </summary>
+        /// <param name="searchTerm">The search term to filter users.</param>
+        /// <returns>A view with the list of users.</returns>
         [HttpGet]
         public async Task<IActionResult> ListUsers(string searchTerm)
         {
@@ -45,7 +95,7 @@ namespace Nøsted.Controllers
                     UserId = user.Id,
                     UserName = user.UserName,
                     Email = user.Email,
-                    CurrentRole = currentRole // Setting the CurrentRole for the user
+                    CurrentRole = currentRole 
                 });
             }
 
@@ -53,8 +103,10 @@ namespace Nøsted.Controllers
         }
 
 
-        
-        
+        /// <summary>
+        /// Displays a list of roles.
+        /// </summary>
+        /// <returns>A view with the list of roles.</returns>
         [HttpGet]
         public IActionResult ListRoles()
         {
@@ -62,70 +114,78 @@ namespace Nøsted.Controllers
             return View(roles);
         }
 
-    
-
+        /// <summary>
+        /// Displays the edit role page for a specified role ID.
+        /// </summary>
+        /// <param name="id">The ID of the role to edit.</param>
+        /// <returns>A view with the role to edit.</returns>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> EditRole(string id)
         {
-            var role = await _roleManager.FindByIdAsync(id);
-
-            if (role == null)
+            var notFoundResult = await GetRoleOrNotFoundResult(id);
+            if (notFoundResult != null)
             {
-                ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
-                return View();
-
+                return notFoundResult; // Shows the not found message if the user is not found
             }
-            var model = new EditRoleViewModel()
+
+
+             
+            var role = await _roleManager.FindByIdAsync(id);
+            var model = new EditRoleViewModel
             {
                 Id = role.Id,
-                RoleName = role.Name,
-                
+                RoleName = role.Name
             };
-            
-            return View(model);
 
+            return View(model);
         }
-        
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> EditRole(EditRoleViewModel model)
         {
+            var notFoundResult = await GetRoleOrNotFoundResult(model.Id);
+            if (notFoundResult != null)
+            {
+                return notFoundResult; // Shows the not found message if the user is not found
+            }
+
+            
             var role = await _roleManager.FindByIdAsync(model.Id);
+            role.Name = model.RoleName;
 
-            if (role == null)
+            // Update the Role using UpdateAsync
+            var result = await _roleManager.UpdateAsync(role);
+
+            if (result.Succeeded)
             {
-                ViewBag.ErrorMessage = $"Role with Id = {model.Id} cannot be found";
-                return View();
-
+                return RedirectToAction("ListRoles");
             }
-            else
-            {
-                role.Name = model.RoleName;
-
-                // Update the Role using UpdateAsync
-                var result = await _roleManager.UpdateAsync(role);
-
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("ListRoles");
-                }
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError("", error.Description);
-                }
-
-                return View(model);
-            }
+            AddErrorsToModelState(result);
+            return View(model);
         }
-
-        
+        // Create a new role
+        /// <summary>
+        /// Displays the create role page.
+        /// </summary>
+        /// <returns>A view to create a new role.</returns>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult CreateRole()
         {
             return View();
         }
 
+        /// <summary>
+        /// Handles the POST request to create a new role.
+        /// </summary>
+        /// <param name="model">The model containing role information.</param>
+        /// <returns>Redirects to the list of roles or shows errors on failure.</returns>
         [HttpPost]
         public async Task<IActionResult> CreateRole(CreateRoleViewModel model)
         {
@@ -141,59 +201,65 @@ namespace Nøsted.Controllers
                     return RedirectToAction("ListRoles");
                 }
 
-                foreach (IdentityError error in result.Errors)
-                {
-                    ModelState.AddModelError("", error.Description);
-                }
+                AddErrorsToModelState(result);
+
             }
 
             return View(model);
         }
+        
+        // Delete a role
+        /// <summary>
+        /// Handles the POST request to delete a role by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the role to delete.</param>
+        /// <returns>Redirects to the list of roles or shows errors on failure.</returns>
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteRole(string id)
         {
+            var notFoundResult = await GetRoleOrNotFoundResult(id);
+            if (notFoundResult != null)
+            {
+                return notFoundResult; // Shows the not found message if the user is not found
+            }
+
+            
             var role = await _roleManager.FindByIdAsync(id);
+            var result = await _roleManager.DeleteAsync(role);
 
-            if (role == null)
+            if (result.Succeeded)
             {
-                ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
-                return View("ListRoles");
+                return RedirectToAction("ListRoles");
             }
-            else
-            {
-                var result = await _roleManager.DeleteAsync(role);
 
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("ListRoles");
-                }
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError("", error.Description);
-                }
-
-                return View("ListRoles");
-            }
+            AddErrorsToModelState(result);
+            return View("ListRoles"); 
         }
 
-        
-        
+
+        // Edit user roles
+        /// <summary>
+        /// Displays the edit user roles page for a specified user ID.
+        /// </summary>
+        /// <param name="userId">The ID of the user to edit roles for.</param>
+        /// <returns>A view to edit user roles.</returns>
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> EditUserRoles(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
+            var notFoundResult = await GetUserOrNotFoundResult(userId);
+            if (notFoundResult != null)
             {
-                // Handle user not found
-                return NotFound();
+                return notFoundResult; // Shows the not found message if the user is not found
             }
+            
+
+            var user = await _userManager.FindByIdAsync(userId);
             ViewBag.Roles = _roleManager.Roles
                 .Where(r => r.Name != "Admin") // Filter out the "Admin" role
                 .Select(r => r.Name)
                 .ToList();
-
 
             var userRoleViewModel = new UserRoleViewModel
             {
@@ -209,37 +275,51 @@ namespace Nøsted.Controllers
 
 
 
-        [HttpPost]
+        /// <summary>
+        /// Handles the POST request to edit user roles.
+        /// </summary>
+        /// <param name="model">The model containing user role information.</param>
+        /// <returns>Redirects to the list of users after updating roles.</returns>
         public async Task<IActionResult> EditUserRoles(UserRoleViewModel model)
         {
-            var user = await _userManager.FindByIdAsync(model.UserId);
-            if (user == null)
+            var notFoundResult = await GetUserOrNotFoundResult(model.UserId);
+            if (notFoundResult != null)
             {
-                // Handle user not found
-                return NotFound();
+                return notFoundResult; // Shows the not found message if the user is not found
             }
 
+            var user = await _userManager.FindByIdAsync(model.UserId);
             var currentRoles = await _userManager.GetRolesAsync(user);
-            
-
+    
             if (!currentRoles.Contains(model.CurrentRole))
             {
                 await _userManager.RemoveFromRolesAsync(user, currentRoles);
                 await _userManager.AddToRoleAsync(user, model.NewRole);
             }
 
-            // Redirect after successful update
             return RedirectToAction("ListUsers");
         }
 
 
+        /// <summary>
+        /// Checks if a user exists by ID.
+        /// </summary>
+        /// <param name="id">The ID of the user to check.</param>
+        /// <returns>True if the user exists, otherwise false.</returns>
+       
         private bool BrukerExists(string id)
         {
           return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
         }
         
-        
+        // Delete a user
+        /// <summary>
+        /// Handles the POST request to delete a user by their ID.
+        /// </summary>
+        /// <param name="id">The ID of the user to delete.</param>
+        /// <returns>Redirects to the list of users after deletion.</returns>
         // POST: Bruker/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
@@ -247,47 +327,17 @@ namespace Nøsted.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                // User not found, handle accordingly
-                return NotFound();
+                ViewBag.ErrorMessage = $"User with ID = {id} not found.";
+                return View("Error"); // A view that shows the error message
             }
 
-            // Get the roles associated with the user
             var roles = await _userManager.GetRolesAsync(user);
 
-            // Remove user from roles
+            // Remove user from roles and delete the user
             var result = await _userManager.RemoveFromRolesAsync(user, roles);
-          
-
-            // Delete the user
             result = await _userManager.DeleteAsync(user);
-            
 
-            // Redirect to the user list or a confirmation page after deletion
             return RedirectToAction(nameof(ListUsers));
         }
-
-         /*// GET: Bruker/Create
-                public IActionResult Create()
-                {
-                    return View();
-                }
-        
-                // POST: Bruker/Create
-                // To protect from overposting attacks, enable the specific properties you want to bind to.
-                // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-                [HttpPost]
-                [ValidateAntiForgeryToken]
-                public async Task<IActionResult> Create([Bind("Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] Bruker bruker)
-                {
-                    if (ModelState.IsValid)
-                    {
-                        _context.Add(bruker);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
-                    }
-                    return View(bruker);
-                }*/
-
-        
     }
 }

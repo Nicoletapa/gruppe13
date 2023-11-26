@@ -1,18 +1,19 @@
 @model Nøsted.Models.UserRoleViewModel 
 
 <form asp-action="EditUserRoles" method="post">
+     @Html.AntiForgeryToken()
     <table class="table table-hover">
         <tr>
-            <th>User Name</th>
+            <th>Brukernavn</th>
             <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
+            <th>Rolle</th>
+            <th>Handlinger</th>
         </tr>
         <tr>
             <td>@Model.UserName</td>
             <td>@Model.Email</td>
             <td>
-                <input type="hidden" name="UserId" value="@Model.UserId" />
+                <input type="hidden" name="UserId" value="@Model.UserId"/>
                 <select asp-for="NewRole" class="form-control">
                     @foreach (var role in ViewBag.Roles as List<string>)
                     {
@@ -21,7 +22,7 @@
                 </select>
             </td>
             <td>
-                <button type="submit" class="btn btn-primary">Change Role</button>
+                <button type="submit" class="btn btn-primary">Endre rolle</button>
             </td>
         </tr>
     </table>

@@ -11,9 +11,9 @@
     <tr>
         <th>Kategori</th>
         <th>Sjekkpunkter</th>
-        <th>OK</th>
-        <th>Bør skiftes</th>
-        <th>Defekt</th>
+        <th class="text-center">OK</th>
+        <th class="text-center">Bør skiftes</th>
+        <th class="text-center">Defekt</th>
     </tr>
     </thead>
     <tbody>
@@ -32,9 +32,9 @@
                 <td>@sjekkpunkt.Sjekkpunkt.SjekkpunktNavn</td>
                 @if (!isLastFive)
                 {
-                    <td><input type="radio" disabled @(sjekkpunkt.Status == "OK" ? "checked" : "") /></td>
-                    <td><input type="radio" disabled @(sjekkpunkt.Status == "Bør skiftes" ? "checked" : "") /></td>
-                    <td><input type="radio" disabled @(sjekkpunkt.Status == "Defekt" ? "checked" : "") /></td>
+                    <td><p class=" radio"><input type="radio"  @(sjekkpunkt.Status == "OK" ? "checked" : "") /></p></td>
+                    <td><p class="text-center radio"><input type="radio"  @(sjekkpunkt.Status == "Bør skiftes" ? "checked" : "") /></p></td>
+                    <td><p class="text-center radio"><input type="radio"  @(sjekkpunkt.Status == "Defekt" ? "checked" : "") /></p></td>
                 }
                 else
                 {
@@ -46,7 +46,7 @@
     </tbody>
 </table>
 
-
-<a asp-action="Delete" asp-route-id="@Model.SjekklisteId" class="btn btn-danger">Slett</a> 
+<a asp-action="Details" asp-controller="Ordre" asp-route-id="@Model.OrdreNr" class="btn btn-secondary">Avbryt</a>
+<a asp-action="Delete" asp-route-id="@Model.SjekklisteId" class="btn btn-danger" >Slett</a> 
 <a asp-action="Edit" asp-route-sjekklisteId="@Model.SjekklisteId" class="btn btn-warning">Endre</a>
 </body>

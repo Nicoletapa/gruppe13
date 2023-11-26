@@ -9,15 +9,15 @@
 <form asp-action="Create" method="post">
     <input type="hidden" asp-for="SjekklisteId" />
     <input type="hidden" asp-for="OrdreNr" />
-
+    @Html.AntiForgeryToken()
     <table class="table table-hover">
         <thead>
             <tr>
                 <th>Kategori</th>
                 <th>Sjekkpunkter</th>
-                <th>OK</th>
-                <th>Bør skiftes</th>
-                <th>Defekt</th>
+                <th  class="text-center">OK</th>
+                <th  class="text-center">Bør skiftes</th>
+                <th  class="text-center">Defekt</th>
             </tr>
         </thead>
         <tbody>
@@ -36,10 +36,10 @@
                         <td>@sjekkpunkt.Sjekkpunkt.SjekkpunktNavn</td>
                          @if (!isLastFive)
                                                 {
-                                                    <td><input type="radio" name="GroupedSjekkpunkter[@groupIndex].Sjekkpunkter[@sjekkpunktIndex].Status" value="OK" /></td>
-                                                    <td><input type="radio" name="GroupedSjekkpunkter[@groupIndex].Sjekkpunkter[@sjekkpunktIndex].Status" value="Bør skiftes" /></td>
-                                                    <td><input type="radio" name="GroupedSjekkpunkter[@groupIndex].Sjekkpunkter[@sjekkpunktIndex].Status" value="Defekt" /></td>
-                                                    <td><input type="hidden" name="GroupedSjekkpunkter[@groupIndex].Sjekkpunkter[@sjekkpunktIndex].Status" value="null"/></td>
+                                                    <td><p class="radio"><input type="radio" name="GroupedSjekkpunkter[@groupIndex].Sjekkpunkter[@sjekkpunktIndex].Status" value="OK" /></p></td>
+                                                    <td><p class=" radio"><input type="radio" name="GroupedSjekkpunkter[@groupIndex].Sjekkpunkter[@sjekkpunktIndex].Status" value="Bør skiftes" /></p></td>
+                                                    <td><p class=" radio"><input type="radio" name="GroupedSjekkpunkter[@groupIndex].Sjekkpunkter[@sjekkpunktIndex].Status" value="Defekt" /></p></td>
+                                                    <td><input type="hidden" name="GroupedSjekkpunkter[@groupIndex].Sjekkpunkter[@sjekkpunktIndex].Status" value=""/></td>
                                                 }
                                                 else
                                                 {

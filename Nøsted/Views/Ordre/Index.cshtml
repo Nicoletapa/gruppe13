@@ -1,128 +1,40 @@
-@model IEnumerable<Nøsted.Models.OrdreViewModel>
+@model IEnumerable<Nøsted.Models.OrdreCompletionViewModel>
 
 @{
     ViewData["Title"] = "Ordre oversikt";
 }
-<html>
-<h1 class="text-font">Ordre oversikt</h1>
-<p>
-    <a class="btn knapp" asp-action="Create">Opprett ny ordre</a>
-</p>
-<body class="text-center text-font "> 
 
-<table class="table">
+<h1 class="text-font">Ordre oversikt</h1>
+
+<a class="btn knapp" asp-action="Create">Opprett ny ordre</a>
+
+<table class=" text-font table table-hover">
     <thead>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.OrdreNr)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Navn)
-        </th>
-        @*<th>
-                @Html.DisplayNameFor(model => model.TelefonNr)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Adresse)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Gjelder)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Epost)
-            </th>*@
-        <th>
-            @Html.DisplayNameFor(model => model.Uke)
-        </th>
-        @*<th>
-                @Html.DisplayNameFor(model => model.Registrert)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Bestilling)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AvtaltLevering)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProduktMotatt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AvtaltFerdigstillelse)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ServiceFerdig)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AntallTimer)
-            </th>*@
-        <th>
-            @Html.DisplayNameFor(model => model.Status)
-        </th>
-        <th></th>
-    </tr>
+        <tr>
+            <th>OrdreNr</th>
+            <th>Navn</th>
+            <th>Uke</th>
+            <th>Status</th>
+            <th class="text-center">Handlinger</th>
+        </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.OrdreNr)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Navn)
-            </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.TelefonNr)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Adresse)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Gjelder)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Epost)
-            </td>*@
-            <td>
-                @Html.DisplayFor(modelItem => item.Uke)
-            </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.Registrert)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bestilling)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AvtaltLevering)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProduktMotatt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AvtaltFerdigstillelse)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ServiceFerdig)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AntallTimer)
-            </td>*@
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                <a asp-action="Edit" class="knapp btn " asp-route-id="@item.OrdreNr">Edit</a> |
-                <a asp-action="Details" class=" knapp-details btn " asp-route-id="@item.OrdreNr">Details</a> |
-                <a asp-action="Delete" class="knapp-delete btn " asp-route-id="@item.OrdreNr">Delete</a>
-            </td>
-        </tr>
-    }
+        @foreach (var item in Model) {
+            <tr>
+                <td>@item.Ordre.OrdreNr</td>
+                <td>@item.Ordre.Navn</td>
+                <td>@item.Ordre.Uke</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: @item.CompletionPercentage%;" aria-valuenow="@item.CompletionPercentage" aria-valuemin="0" aria-valuemax="100">@item.CompletionPercentage% </div>
+                    </div>
+                </td>
+                <td class="text-center">
+                    <a asp-action="Edit" class="knapp btn" asp-route-id="@item.Ordre.OrdreNr">Endre</a> |
+                    <a asp-action="Details" class="knapp-details btn" asp-route-id="@item.Ordre.OrdreNr">Detaljer</a> |
+                    <a asp-action="Delete" class="knapp-delete btn" asp-route-id="@item.Ordre.OrdreNr">Slett</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
-</body>
-</html>

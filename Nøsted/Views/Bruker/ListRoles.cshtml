@@ -6,8 +6,8 @@
 
 
 <div class=" text-font role-management-container">
-    <h2>Manage Roles</h2>
-    <a asp-action="CreateRole" class="btn btn-success mb-3">Create New Role</a>
+    <h2>Administerere roller</h2>
+    <a asp-action="CreateRole" class="btn btn-success mb-3">Legg til rolle</a>
 
     <table class="table table-hover">
         <thead>
@@ -23,9 +23,9 @@
                
                 <td class="role-name">@role.Name</td>
                 <td class="actions">
-                    <a asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-primary">Edit</a>
+                    <a asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-primary">Endre</a>
                     <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this role?');">Delete</button>
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker på at du vil slette denne @role.Name?');">Slett</button>
                     </form>
                 </td>
                 

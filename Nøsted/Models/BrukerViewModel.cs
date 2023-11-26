@@ -4,23 +4,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Nøsted.Models;
 
-public class ApplicationUser : IdentityUser
-{
-   [Key]
-   public override string Id { get; set; }
-  
-}
-
 public class CreateRoleViewModel
 {
    [Required]
    public string RoleName { get; set; }
 }
 
+
 public class EditRoleViewModel
 {
- 
-
    public string Id { get; set; }
 
    [Required(ErrorMessage = "Role Name is required")]
@@ -37,8 +29,6 @@ public class UserRoleViewModel
    public string CurrentRole { get; set; } // Assuming one role per user for simplicity
    public List<string> AvailableRoles { get; set; } // All available roles
    public string NewRole { get; set; }
-
-
 }
 
 
