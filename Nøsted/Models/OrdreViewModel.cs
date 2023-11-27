@@ -8,7 +8,7 @@ namespace Nøsted.Models;
 
 public class OrdreCompletionViewModel
 {
-    public OrdreViewModel Ordre { get; set; }
+    public OrdreEntity Ordre { get; set; }
     public float CompletionPercentage { get; set; }
 }
 

@@ -19,7 +19,7 @@ namespace Nøsted.Data;
         }
 
         // Represents the orders in the database.
-        public DbSet<OrdreViewModel> Ordre1 { get; set; } = default!;
+        public DbSet<OrdreEntity> Ordre1 { get; set; } = default!;
 
         // Represents categories in the database.
         public DbSet<Kategori> Kategori { get; set; }

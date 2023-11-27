@@ -129,7 +129,7 @@ namespace Nøsted.Controllers
         {
             {
                 var result = await FetchOrdreViewModelOrNotFoundAsync(id, "OrdreCompletionViewModel");
-                if (result is ViewResult viewResult && viewResult.Model is OrdreViewModel ordreViewModel)
+                if (result is ViewResult viewResult && viewResult.Model is OrdreEntity ordreViewModel)
                 {
                     var completionPercentage = await CalculateCompletionPercentage(id.Value);
                     var viewModel = new OrdreCompletionViewModel
@@ -160,20 +160,20 @@ namespace Nøsted.Controllers
         /// <summary>
         /// Handles the creation of a new order.
         /// </summary>
-        /// <param name="ordreViewModel">The order view model to create.</param>
+        /// <param name="ordreEntity">The order view model to create.</param>
         /// <returns>Redirects to the order list if successful; otherwise, returns the creation form.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrdreNr,Navn,TelefonNr,Adresse,Type,Gjelder,Epost,Uke,Registrert,Bestilling,AvtaltLevering,ProduktMotatt,AvtaltFerdigstillelse,ServiceFerdig,AntallTimer,Status")] OrdreViewModel ordreViewModel)
+        public async Task<IActionResult> Create([Bind("OrdreNr,Navn,TelefonNr,Adresse,Type,Gjelder,Epost,Uke,Registrert,Bestilling,AvtaltLevering,ProduktMotatt,AvtaltFerdigstillelse,ServiceFerdig,AntallTimer,Status")] OrdreEntity ordreEntity)
         {
             ModelState.Remove("OrdreNr");
             if (ModelState.IsValid)
             {
-                _context.Add(ordreViewModel);
+                _context.Add(ordreEntity);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(ordreViewModel);
+            return View(ordreEntity);
         }
         
         /// <summary>
@@ -192,13 +192,13 @@ namespace Nøsted.Controllers
         /// Handles the editing of an existing order.
         /// </summary>
         /// <param name="id">The ID of the order to edit.</param>
-        /// <param name="ordreViewModel">The updated order view model.</param>
+        /// <param name="ordreEntity">The updated order view model.</param>
         /// <returns>Redirects to the order list if successful; otherwise, returns the editing form.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrdreNr,Navn,TelefonNr,Adresse,Type,Gjelder,Epost,Uke,Registrert,Bestilling,AvtaltLevering,ProduktMotatt,AvtaltFerdigstillelse,ServiceFerdig,AntallTimer,status")] OrdreViewModel ordreViewModel)
+        public async Task<IActionResult> Edit(int id, [Bind("OrdreNr,Navn,TelefonNr,Adresse,Type,Gjelder,Epost,Uke,Registrert,Bestilling,AvtaltLevering,ProduktMotatt,AvtaltFerdigstillelse,ServiceFerdig,AntallTimer,status")] OrdreEntity ordreEntity)
         {
-            if (id != ordreViewModel.OrdreNr)
+            if (id != ordreEntity.OrdreNr)
             {
                 return NotFound();
             }
@@ -207,12 +207,12 @@ namespace Nøsted.Controllers
             {
                 try
                 {
-                    _context.Update(ordreViewModel);
+                    _context.Update(ordreEntity);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrdreViewModelExists(ordreViewModel.OrdreNr))
+                    if (!OrdreViewModelExists(ordreEntity.OrdreNr))
                     {
                         return NotFound();
                     }
@@ -223,7 +223,7 @@ namespace Nøsted.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(ordreViewModel);
+            return View(ordreEntity);
         }
         
         /// <summary>

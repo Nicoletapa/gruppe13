@@ -286,11 +286,19 @@ namespace Nøsted.Controllers
 
             return View(sjekklisteSjekkpunkter);
         }
-                /// <summary>
-                /// 
-                /// </summary>
-                /// <param name="id"></param>
-                /// <returns></returns>
+        /// <summary>
+        /// Deletes a specified 'Sjekkliste' entry and its associated 'SjekklisteSjekkpunkt' entries from the database.
+        /// This action is confirmed through a POST request. It first checks if the 'Sjekkliste' entry exists based on the given ID.
+        /// If it exists, the method proceeds to find all related 'SjekklisteSjekkpunkt' entries based on the 'OrdreNr' from the 'Sjekkliste'.
+        /// It then deletes all these related entries and saves the changes to the database.
+        /// After successful deletion, it redirects to the 'Index' action of the 'Ordre' controller.
+        /// </summary>
+        /// <param name="id">The unique identifier (GUID) of the 'Sjekkliste' entry to be deleted.</param>
+        /// <returns>
+        /// A Task resulting in an IActionResult:
+        /// - NotFound result if the specified 'Sjekkliste' entry or its related 'SjekklisteSjekkpunkt' entries are not found.
+        /// - A RedirectToAction result to the 'Index' action of the 'Ordre' controller upon successful deletion.
+        /// </returns>
                 [HttpPost, ActionName("Delete")]
                 [ValidateAntiForgeryToken]
                 public async Task<IActionResult> DeleteConfirmed (Guid id)        {
@@ -299,10 +307,10 @@ namespace Nøsted.Controllers
 
                     if (sjekkliste == null)
                     {
-                        return NotFound(); // Sjekkliste not found
+                        return NotFound(); 
                     }
 
-                    int orderId = sjekkliste.OrdreNr; // Assuming OrdreNr is a property of SjekklisteSjekkpunkt
+                    int orderId = sjekkliste.OrdreNr;
 
                     // Find all SjekklisteSjekkpunkt entries related to the orderId
                     var sjekklisteSjekkpunkter = await _context.SjekklisteSjekkpunkt
@@ -311,7 +319,7 @@ namespace Nøsted.Controllers
 
                     if (sjekklisteSjekkpunkter == null || !sjekklisteSjekkpunkter.Any())
                     {
-                        return NotFound(); // No SjekklisteSjekkpunkt found for the given orderId
+                        return NotFound(); 
                     }
 
                     // Remove the found entries from the database context
@@ -321,12 +329,9 @@ namespace Nøsted.Controllers
                     await _context.SaveChangesAsync();
 
                     // Redirect to a success page, or another appropriate action
-                    return RedirectToAction("Index", "Ordre"); // Replace 'Index' with your desired landing page after deletion
+                    return RedirectToAction("Index", "Ordre"); 
                 }
            
-
-
-       
 
        
     }

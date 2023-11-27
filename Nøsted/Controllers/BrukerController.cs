@@ -126,11 +126,9 @@ namespace Nøsted.Controllers
             var notFoundResult = await GetRoleOrNotFoundResult(id);
             if (notFoundResult != null)
             {
-                return notFoundResult; // Shows the not found message if the user is not found
+                return notFoundResult; 
             }
-
-
-             
+            
             var role = await _roleManager.FindByIdAsync(id);
             var model = new EditRoleViewModel
             {
@@ -146,15 +144,15 @@ namespace Nøsted.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> EditRole(EditRoleViewModel model)
         {
             var notFoundResult = await GetRoleOrNotFoundResult(model.Id);
             if (notFoundResult != null)
             {
-                return notFoundResult; // Shows the not found message if the user is not found
+                return notFoundResult; 
             }
-
             
             var role = await _roleManager.FindByIdAsync(model.Id);
             role.Name = model.RoleName;
@@ -187,6 +185,7 @@ namespace Nøsted.Controllers
         /// <param name="model">The model containing role information.</param>
         /// <returns>Redirects to the list of roles or shows errors on failure.</returns>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateRole(CreateRoleViewModel model)
         {
             if (ModelState.IsValid)
@@ -280,6 +279,8 @@ namespace Nøsted.Controllers
         /// </summary>
         /// <param name="model">The model containing user role information.</param>
         /// <returns>Redirects to the list of users after updating roles.</returns>
+        [ValidateAntiForgeryToken]
+        [HttpPost]
         public async Task<IActionResult> EditUserRoles(UserRoleViewModel model)
         {
             var notFoundResult = await GetUserOrNotFoundResult(model.UserId);

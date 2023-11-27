@@ -29,9 +29,9 @@ public class OrdreControllerTests
         await _context.SaveChangesAsync();
     }
 
-    private OrdreViewModel CreateTestOrdreViewModel()
+    private OrdreEntity CreateTestOrdreViewModel()
     {
-        return new OrdreViewModel
+        return new OrdreEntity
         {
             OrdreNr = 1,
             Navn = "Test Navn",

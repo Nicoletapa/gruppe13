@@ -7,7 +7,7 @@ namespace Nøsted.Models;
 
 
 [Table("Ordre1")]
-public class OrdreViewModel
+public class OrdreEntity
 {
     [Key]
     [ValidateNever]
